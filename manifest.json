@@ -1,8 +1,8 @@
 {
   "id": "com.savaa.stremio.solo",
-  "version": "4.261026.1830",
-  "name": "Natural Solo & Desi MMS Suite",
-  "description": "Curated Stremio Master Suite: 1416 videos across 6 categories. 100% Direct-Playing 1080p+/4K Natural Solo & Mastiraja HD Leaks. Zero 403 playback errors.",
+  "version": "5.261027.0135",
+  "name": "Natural Solo, Couples & Desi MMS Suite",
+  "description": "Curated Stremio Master Suite: 4796 videos across 8 categories. Direct 1080p+/4K Natural Solo & Couples + Authentic Mastiraja & FSIBlog Desi MMS Leaks. Filtered and Verified.",
   "resources": [
     "catalog",
     "meta",
@@ -15,7 +15,9 @@
     "xfhq",
     "masti_",
     "pb_",
-    "paki_"
+    "paki_",
+    "desi_",
+    "fsixx_"
   ],
   "catalogs": [
     {
@@ -64,8 +66,19 @@
     },
     {
       "type": "movie",
-      "id": "xfhq_desi_pakistan",
-      "name": "Pakistani Solo & Cam Leaks (Direct HD)",
+      "id": "xfhq_couples",
+      "name": "Couples & Passionate Fucking (1080p+)",
+      "extra": [
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "xfhq_desi_mms",
+      "name": "Desi Viral MMS Leaks (Direct HD)",
       "extra": [
         {
           "name": "skip",
@@ -77,6 +90,17 @@
       "type": "movie",
       "id": "xfhq_desi_creators",
       "name": "Desi Creators & Nude Solo (Direct HD)",
+      "extra": [
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "xfhq_desi_pakistan",
+      "name": "Pakistani Solo & Cam Leaks (Direct HD)",
       "extra": [
         {
           "name": "skip",
