@@ -36,10 +36,8 @@ def probe_stream(stream_info):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Range': 'bytes=0-1024'
     }
-    if proxy_headers and 'request' in proxy_headers:
-        req_headers.update(proxy_headers['request'])
-    elif "cdn.fsiblogxx.com" in stream_url:
-        req_headers['Referer'] = 'https://www.fsiblogxx.com/'
+    # Vidi and Stremio Web/iPhone cannot send custom headers, so probe exactly like the
+    # client does: no Referer, no proxyHeaders. A stream that needs them is dead for us.
 
     try:
         req = urllib.request.Request(stream_url, headers=req_headers)
