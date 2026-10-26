@@ -1,8 +1,8 @@
 {
   "id": "com.savaa.stremio.solo",
-  "version": "5.261027.0230",
+  "version": "5.261027.0200",
   "name": "Natural Solo, Couples & Desi MMS Suite",
-  "description": "Curated Stremio Master Suite: 4796 videos across 8 categories. Direct 1080p+/4K Natural Solo & Couples + Authentic Mastiraja & FSIBlog Desi MMS Leaks. Filtered and Verified.",
+  "description": "Curated Stremio Master Suite: 4546 videos across 8 categories. Direct 1080p+/4K Natural Solo & Couples + Authentic Mastiraja & FSIBlog Desi MMS Leaks. Filtered and Verified.",
   "resources": [
     "catalog",
     "meta",
@@ -26,6 +26,10 @@
       "name": "Phat Booty & Twerk Flaunt (1080p+)",
       "extra": [
         {
+          "name": "search",
+          "isRequired": false
+        },
+        {
           "name": "skip",
           "isRequired": false
         }
@@ -36,6 +40,10 @@
       "id": "xfhq_shower_wet",
       "name": "Solo Nude Shower & Wet Bath (1080p+)",
       "extra": [
+        {
+          "name": "search",
+          "isRequired": false
+        },
         {
           "name": "skip",
           "isRequired": false
@@ -48,6 +56,10 @@
       "name": "Real Solo Striptease (1080p+)",
       "extra": [
         {
+          "name": "search",
+          "isRequired": false
+        },
+        {
           "name": "skip",
           "isRequired": false
         }
@@ -58,6 +70,10 @@
       "id": "xfhq_phone_selfie",
       "name": "Amateur Phonecam & Mirror Selfies (1080p+)",
       "extra": [
+        {
+          "name": "search",
+          "isRequired": false
+        },
         {
           "name": "skip",
           "isRequired": false
@@ -70,6 +86,10 @@
       "name": "Couples & Passionate Fucking (1080p+)",
       "extra": [
         {
+          "name": "search",
+          "isRequired": false
+        },
+        {
           "name": "skip",
           "isRequired": false
         }
@@ -80,6 +100,10 @@
       "id": "xfhq_desi_mms",
       "name": "Desi Viral MMS Leaks (Direct HD)",
       "extra": [
+        {
+          "name": "search",
+          "isRequired": false
+        },
         {
           "name": "skip",
           "isRequired": false
@@ -92,6 +116,10 @@
       "name": "Desi Creators & Nude Solo (Direct HD)",
       "extra": [
         {
+          "name": "search",
+          "isRequired": false
+        },
+        {
           "name": "skip",
           "isRequired": false
         }
@@ -102,6 +130,10 @@
       "id": "xfhq_desi_pakistan",
       "name": "Pakistani Solo & Cam Leaks (Direct HD)",
       "extra": [
+        {
+          "name": "search",
+          "isRequired": false
+        },
         {
           "name": "skip",
           "isRequired": false
