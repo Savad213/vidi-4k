@@ -1,0 +1,39 @@
+name: Weekly vidi-4k Catalog Refresh
+
+on:
+  schedule:
+    # Runs every Monday at 04:00 UTC (08:00 GST)
+    - cron: '0 4 * * 1'
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  refresh-and-rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Run Weekly Refresh Crawler & Rebuilder
+        run: |
+          python refresh_weekly.py
+
+      - name: Commit and Push Changes If Updated
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "No new catalog items found. Clean working tree."
+          else
+            git commit -m "chore(cron): automated weekly catalog refresh and link audit"
+            git push origin main
+          fi

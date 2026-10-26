@@ -1,9 +1,12 @@
 """
-Master Suite Rebuilder for Stremio / Vidi (vidi-4k):
-- Types strictly ["movie"] only
-- Content Filter: Excludes pregnant, black, old/mature, anime/cartoons, flat/skinny, group sex,
-  rough/BDSM, toys (dildo/vibrator/wand/plug), gaping/spreading close-ups, men-focused clips,
-  tentacle/piss/prison/gloryhole/fetish, BubbleButt tag, Masturbation tag.
+Master Suite Rebuilder for Stremio / Vidi (vidi-4k) - Production Suite v5:
+- Types strictly ["movie"] only (Zero "Porn" type)
+- Strict Content Filter by default: Ambiguous items excluded.
+  Excludes pregnant, black, old/mature, anime/3D/cartoons, flat/skinny, group sex,
+  rough/BDSM, toys (dildos, vibrators, plugs, wands), gaping/spreading close-ups,
+  men-focused clips, tentacle/piss/toilet/prison/gloryhole/fetish, BubbleButt tags, Masturbation tags.
+  Non-Desi Western stars excluded from Desi rows.
+- Complete audit of all excluded items written to `excluded.json` with reasons.
 - 8 Curated Catalogs (Max ~8-10):
   1. xfhq_thick_booty: Phat Booty & Twerk Flaunt (1080p+) [incl. HaleyQuinnLA]
   2. xfhq_shower_wet: Solo Nude Shower & Wet Bath (1080p+)
@@ -13,22 +16,33 @@ Master Suite Rebuilder for Stremio / Vidi (vidi-4k):
   6. xfhq_desi_mms: Desi Viral MMS Leaks (Direct HD) [Mastiraja + FSIBlog + FSIBlogXX]
   7. xfhq_desi_creators: Desi Creators & Nude Solo (Direct HD) [Authentic Desi Solo Nudes]
   8. xfhq_desi_pakistan: Pakistani Solo & Cam Leaks (Direct HD) [Mastiraja 100% Direct + Clean Leaks]
-- Pillow humping folded into thick booty / solo strip / couples as requested.
-- Static stream & meta JSON generation for 100% of candidate items.
-- Complete pagination (skip=100.json, skip=200.json, etc.) for all catalogs.
-- Logs every single removed item with reason.
+- Ranking: Best-first (4K vertical recent > 1080p+ vertical recent > 1080p+ horizontal > 720p > 480p).
+- Complete Pagination: skip=100.json, skip=200.json, etc. for all catalogs.
+- Search Support: Added 'search' extra to manifest and generated pre-indexed search files for common queries.
+- Integrated Link Checker: Probes stream endpoints with Range requests, drops dead links, writes link_checker_report.json.
+- Zero-cost: Works 100% on free GitHub Pages and operator PC.
 """
 
 import json
 import os
 import re
 import shutil
+import urllib.request
+import ssl
 from pathlib import Path
+from collections import Counter
+from concurrent.futures import ThreadPoolExecutor
 
 REPO_ROOT = Path(__file__).parent
 PAGE_SIZE = 100
+EXCLUDED_FILE = REPO_ROOT / "excluded.json"
+LINK_REPORT_FILE = REPO_ROOT / "link_checker_report.json"
 
-# 1. LOAD SOURCES
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
+
+# 1. LOAD SOURCE DATA
 print("=== Step 1: Loading Source Catalog Pools ===")
 vidi_pool = json.load(open(REPO_ROOT / "vidi.json", encoding="utf-8"))["items"]
 vidi_all_pool = json.load(open(REPO_ROOT / "vidi_all.json", encoding="utf-8"))["items"]
@@ -44,8 +58,7 @@ paki_pool = json.load(open(REPO_ROOT / "pakistani_all.json", encoding="utf-8"))[
 fsixx_raw = json.load(open(REPO_ROOT / "fsiblogxx_all.json", encoding="utf-8"))
 fsixx_pool = fsixx_raw.get("items", fsixx_raw) if isinstance(fsixx_raw, dict) else fsixx_raw
 
-# Known dead IDs from live HTTP checks
-DEAD_FSIXX_IDS = {
+DEAD_INITIAL_IDS = {
     'fsixx_small-boobs-girlfriend-horny-sex', 'fsixx_sexy-ass-marathi-housewife-sucking',
     'fsixx_cute-bengali-girlfriend-boob-showing', 'fsixx_bengali-aunty-outdoor-shoot-in-saree',
     'fsixx_mom-walking-naked-from-bathroom', 'fsixx_tamil-wife-boob-show-in-nighty',
@@ -63,7 +76,7 @@ WESTERN_PORNSTAR_PAT = re.compile(r"""(?i)\b(
 
 print(f"Sources loaded: Vidi={len(all_vidi)}, Masti={len(masti_pool)}, Desi={len(desi_pool)}, Paki={len(paki_pool)}, FSIXX={len(fsixx_pool)}")
 
-# 2. UNIVERSAL CONTENT FILTERS
+# 2. STRICT CONTENT FILTERS
 DISALLOWED_TAGS = {
     'pregnant', 'pregnantsolo', 'pregnanttits',
     'ebony', 'black', 'darkskin',
@@ -143,8 +156,47 @@ def check_solo(item):
         return False, f"Solo violation: '{m.group(0)}'"
     return True, "OK"
 
-# 3. BUILD 8 CURATED CATALOGS
-print("\n=== Step 2: Filtering and Building 8 Master Catalogs ===")
+# 3. RANKING ALGORITHM
+def rank_key(it, special_id=None):
+    if special_id and it.get('id') == special_id:
+        return (-1, 0, 0, 0)
+    qual = str(it.get('quality', '')).upper()
+    res = str(it.get('resolution', '')).lower()
+    ori = str(it.get('orientation', '')).lower()
+
+    # Resolution Rank (0=4K, 1=1080p+, 2=720p HD, 3=480p+)
+    if '4K' in qual or '2160' in res:
+        res_rank = 0
+    elif '1080' in qual or '1080' in res:
+        res_rank = 1
+    elif '720' in qual or '720' in res:
+        res_rank = 2
+    else:
+        res_rank = 3
+
+    # Orientation Rank (0=vertical, 1=horizontal)
+    if ori == 'vertical' or ('x' in res and int(res.split('x')[0]) < int(res.split('x')[1])):
+        ori_rank = 0
+    else:
+        ori_rank = 1
+
+    # Recency Rank
+    year = 0
+    for y in [2026, 2025, 2024, 2023, 2022, 2021]:
+        if str(y) in str(it.get('releaseInfo', '')) or str(y) in it.get('name', ''):
+            year = y
+            break
+    year_rank = -year
+
+    # Popularity / Likes
+    likes = it.get('likes', 0)
+    try: likes = int(likes)
+    except: likes = 0
+
+    return (res_rank, ori_rank, year_rank, -likes)
+
+# 4. FILTERING AND ASSIGNING CANDIDATES
+print("\n=== Step 2: Strict Filtering and Catalog Assignment ===")
 
 catalogs_data = {
     "xfhq_thick_booty": {"name": "Phat Booty & Twerk Flaunt (1080p+)", "items": [], "removed": []},
@@ -157,9 +209,23 @@ catalogs_data = {
     "xfhq_desi_pakistan": {"name": "Pakistani Solo & Cam Leaks (Direct HD)", "items": [], "removed": []},
 }
 
+all_excluded_records = []
+
+def record_exclusion(item, cat_id, reason):
+    rec = {
+        "id": item.get("id", ""),
+        "name": item.get("name", ""),
+        "candidate_catalog": cat_id,
+        "reason": reason,
+        "tags": item.get("tags", []),
+        "stream_url": item.get("stream_url") or item.get("url", "")
+    }
+    all_excluded_records.append(rec)
+    catalogs_data[cat_id]["removed"].append((rec["id"], rec["name"], reason))
+
 assigned_global = set()
 
-# A. HaleyQuinnLA twerk video at top of Phat Booty
+# A. HaleyQuinnLA Twerk video at Rank 0 of Phat Booty
 haley_item = {
     "id": "pb_haleyquinnla_bathroom_twerk",
     "name": "HaleyQuinnLA Twerks In Her Bathroom",
@@ -167,13 +233,15 @@ haley_item = {
     "thumbnail": "https://pimpbunny.com/contents/videos_screenshots/524000/524982/preview_720p.mp4.jpg",
     "stream_url": "https://savad213.github.io/vidi-4k/media/haleyquinnla_bathroom_twerk.mp4",
     "quality": "720p HD",
+    "orientation": "vertical",
+    "resolution": "404x720",
     "runtime": "0:33",
     "tags": ["Twerking", "BigAss", "PhatBooty", "Bathroom", "Solo"]
 }
 catalogs_data["xfhq_thick_booty"]["items"].append(haley_item)
 assigned_global.add(haley_item["id"])
 
-# B. Shower Wet (Run first to capture all bath/shower)
+# B. Shower Wet
 shower_tags = {"Shower", "Bath", "Soapy"}
 for it in all_vidi:
     if it["id"] in assigned_global: continue
@@ -185,9 +253,9 @@ for it in all_vidi:
             catalogs_data["xfhq_shower_wet"]["items"].append(it)
             assigned_global.add(it["id"])
         else:
-            catalogs_data["xfhq_shower_wet"]["removed"].append((it["id"], it["name"], reason))
+            record_exclusion(it, "xfhq_shower_wet", reason)
 
-# C. Thick Booty (Ass, Twerking, Curvy, Phat Booty + pillow humping folded in)
+# C. Thick Booty (with Pillow Humping folded in)
 thick_tags = {"BigAss", "Twerking", "Ass", "ThickBooty", "BigButt", "Booty", "Thick"}
 pillow_kws = re.compile(r"(?i)\b(pillow|hump\w*|grind\w*)\b")
 for it in all_vidi:
@@ -201,9 +269,9 @@ for it in all_vidi:
             catalogs_data["xfhq_thick_booty"]["items"].append(it)
             assigned_global.add(it["id"])
         else:
-            catalogs_data["xfhq_thick_booty"]["removed"].append((it["id"], it["name"], reason))
+            record_exclusion(it, "xfhq_thick_booty", reason)
 
-# D. Real Solo Striptease (Striptease, Teasing, Lingerie, Undress)
+# D. Real Solo Striptease
 strip_tags = {"Striptease", "Teasing", "Lingerie", "Undress"}
 for it in all_vidi:
     if it["id"] in assigned_global: continue
@@ -215,9 +283,9 @@ for it in all_vidi:
             catalogs_data["xfhq_solo_strip"]["items"].append(it)
             assigned_global.add(it["id"])
         else:
-            catalogs_data["xfhq_solo_strip"]["removed"].append((it["id"], it["name"], reason))
+            record_exclusion(it, "xfhq_solo_strip", reason)
 
-# E. Amateur Phonecam & Mirror Selfies (Selfie, Mirror, Phonecam, Bedroom Baddie)
+# E. Amateur Phonecam & Mirror Selfies
 phone_tags = {"Selfie", "NakedSelfie", "Mirror"}
 phone_kws = re.compile(r"(?i)\b(selfie|mirror|phone|snap|snapchat|bedroom|baddie|amateur|tiktok)\b")
 for it in all_vidi:
@@ -231,9 +299,9 @@ for it in all_vidi:
             catalogs_data["xfhq_phone_selfie"]["items"].append(it)
             assigned_global.add(it["id"])
         else:
-            catalogs_data["xfhq_phone_selfie"]["removed"].append((it["id"], it["name"], reason))
+            record_exclusion(it, "xfhq_phone_selfie", reason)
 
-# F. Couples & Passionate Fucking (Natural, strictly MF, no group, no toys)
+# F. Couples & Passionate Fucking (Strictly natural MF couples, no group, no toys)
 couples_tags = {"Couples", "AmateurCouple", "RealCouple", "Fucking", "Homemade", "Missionary", "Cowgirl", "Doggystyle"}
 for it in all_vidi:
     if it["id"] in assigned_global: continue
@@ -246,14 +314,15 @@ for it in all_vidi:
             catalogs_data["xfhq_couples"]["items"].append(it)
             assigned_global.add(it["id"])
         else:
-            catalogs_data["xfhq_couples"]["removed"].append((it["id"], it["name"], reason))
+            record_exclusion(it, "xfhq_couples", reason)
 
-# G. Pakistani Solo & Cam Leaks (Direct HD first from Mastiraja, then verified sources)
+# G. Pakistani Solo & Cam Leaks
 paki_pat = re.compile(r"(?i)\b(pakistan|pakistani|lahore|karachi|islamabad|rawalpindi|peshawar|punjabi|pathan|minahil|alina|imsha|alisha|ayesha)\b")
 seen_desi_streams = set()
 
 for it in paki_pool:
-    if it["id"] in DEAD_FSIXX_IDS:
+    if it["id"] in DEAD_INITIAL_IDS:
+        record_exclusion(it, "xfhq_desi_pakistan", "Confirmed dead stream URL")
         continue
     st = it.get("stream_url", "")
     if not st or st in seen_desi_streams: continue
@@ -262,13 +331,14 @@ for it in paki_pool:
         seen_desi_streams.add(st)
         catalogs_data["xfhq_desi_pakistan"]["items"].append(it)
     else:
-        catalogs_data["xfhq_desi_pakistan"]["removed"].append((it["id"], it["name"], reason))
+        record_exclusion(it, "xfhq_desi_pakistan", reason)
 
 # H. Desi Viral MMS Leaks & Desi Creators
 mms_pat = re.compile(r"(?i)\b(mms|viral|leak|scandal|hotel|tape|hidden|cam|call|room|caught)\b")
 all_desi_candidates = masti_pool + desi_pool + fsixx_pool
 for it in all_desi_candidates:
-    if it["id"] in DEAD_FSIXX_IDS:
+    if it["id"] in DEAD_INITIAL_IDS:
+        record_exclusion(it, "xfhq_desi_mms", "Confirmed dead stream URL")
         continue
     st = it.get("stream_url", "")
     if not st or st in seen_desi_streams: continue
@@ -276,24 +346,24 @@ for it in all_desi_candidates:
 
     # Drop Western porn star imports from Desi collections
     if WESTERN_PORNSTAR_PAT.search(txt):
-        catalogs_data["xfhq_desi_creators"]["removed"].append((it["id"], it["name"], "Non-Desi Western porn star"))
+        record_exclusion(it, "xfhq_desi_creators", "Non-Desi Western porn star")
         continue
 
-    # Route Pakistani leaks to Pakistani catalog if matching
+    # Route Pakistani leaks to Pakistani catalog
     if paki_pat.search(txt):
         ok, reason = check_universal(it)
         if ok:
             seen_desi_streams.add(st)
             catalogs_data["xfhq_desi_pakistan"]["items"].append(it)
         else:
-            catalogs_data["xfhq_desi_pakistan"]["removed"].append((it["id"], it["name"], reason))
+            record_exclusion(it, "xfhq_desi_pakistan", reason)
     elif mms_pat.search(txt) or any("mms" in t.lower() or "leak" in t.lower() or "viral" in t.lower() for t in it.get("tags", [])):
         ok, reason = check_universal(it)
         if ok:
             seen_desi_streams.add(st)
             catalogs_data["xfhq_desi_mms"]["items"].append(it)
         else:
-            catalogs_data["xfhq_desi_mms"]["removed"].append((it["id"], it["name"], reason))
+            record_exclusion(it, "xfhq_desi_mms", reason)
     else:
         # Desi Creators & Nude Solo (Strictly solo)
         ok_solo, reason_solo = check_solo(it)
@@ -301,41 +371,57 @@ for it in all_desi_candidates:
             seen_desi_streams.add(st)
             catalogs_data["xfhq_desi_creators"]["items"].append(it)
         else:
-            # If not solo, check if it's a valid couple MMS leak
             ok_uni, reason_uni = check_universal(it)
             if ok_uni:
                 seen_desi_streams.add(st)
                 catalogs_data["xfhq_desi_mms"]["items"].append(it)
             else:
-                catalogs_data["xfhq_desi_creators"]["removed"].append((it["id"], it["name"], reason_uni))
+                record_exclusion(it, "xfhq_desi_creators", reason_uni)
 
-# Sort catalogs: 4K items first, then by likes or popularity
+# Save excluded.json
+EXCLUDED_FILE.write_text(json.dumps(all_excluded_records, indent=2, ensure_ascii=False), encoding="utf-8")
+print(f"Saved {len(all_excluded_records)} initial excluded items to {EXCLUDED_FILE.name}")
+
+# 4b. RUN LINK CHECKER & PRUNE DEAD LINKS
+print("\n=== Step 3b: Probing Active Stream Links ===")
+from check_links import run_link_checker
+dead_ids, link_report = run_link_checker(catalogs_data, max_workers=30)
+for cid, cdata in catalogs_data.items():
+    alive_items = []
+    for it in cdata["items"]:
+        if it["id"] in dead_ids:
+            record_exclusion(it, cid, "Dead stream URL / probe failed")
+        else:
+            alive_items.append(it)
+    cdata["items"] = alive_items
+
+EXCLUDED_FILE.write_text(json.dumps(all_excluded_records, indent=2, ensure_ascii=False), encoding="utf-8")
+print(f"Final excluded items saved: {len(all_excluded_records)} to {EXCLUDED_FILE.name}")
+
+# 5. SORT AND RANK BEST-FIRST
+print("\n=== Step 3: Applying Best-First Ranking Algorithm ===")
 for cid in ["xfhq_thick_booty", "xfhq_shower_wet", "xfhq_solo_strip", "xfhq_phone_selfie", "xfhq_couples"]:
+    catalogs_data[cid]["items"].sort(key=lambda x: rank_key(x, special_id=haley_item["id"]))
+
+for cid in ["xfhq_desi_mms", "xfhq_desi_creators", "xfhq_desi_pakistan"]:
     catalogs_data[cid]["items"].sort(
         key=lambda x: (
-            0 if x.get("id") == haley_item["id"] else (
-                1 if x.get("quality") == "4K" else 2
-            ),
+            0 if "720" in str(x.get("quality", "")) else 1,
             -x.get("likes", 0)
         )
     )
 
-print("\n=== Candidate Filtering Summary ===")
-total_all_videos = 0
+total_active = sum(len(c["items"]) for c in catalogs_data.values())
 for cid, cdata in catalogs_data.items():
-    total_all_videos += len(cdata["items"])
-    print(f"Catalog: {cid:22} | Kept: {len(cdata['items']):4} | Removed: {len(cdata['removed']):4}")
-print(f"Total Active Videos Across All Catalogs: {total_all_videos}")
+    print(f"Catalog {cid:22} | Active: {len(cdata['items']):4} | Excluded: {len(cdata['removed']):4}")
+print(f"Total Active Videos Across All Catalogs: {total_active}")
 
-# 4. WRITE STATIC STREAM AND META FILES FOR ALL ACTIVE CANDIDATES
-print("\n=== Step 3: Verifying and Generating Stream & Meta JSON Files ===")
+# 6. WRITE STATIC STREAM AND META FILES
+print("\n=== Step 4: Generating Stream & Meta JSON Files ===")
 meta_dir = REPO_ROOT / "meta" / "movie"
 stream_dir = REPO_ROOT / "stream" / "movie"
 meta_dir.mkdir(parents=True, exist_ok=True)
 stream_dir.mkdir(parents=True, exist_ok=True)
-
-written_streams = 0
-written_metas = 0
 
 def to_meta(item):
     return {
@@ -358,13 +444,10 @@ for cid, cdata in catalogs_data.items():
         m_file = meta_dir / f"{vid_id}.json"
         s_file = stream_dir / f"{vid_id}.json"
 
-        # Ensure meta file exists
         if not m_file.exists():
             meta_obj = {"meta": to_meta(it)}
             m_file.write_text(json.dumps(meta_obj, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
-            written_metas += 1
 
-        # Ensure stream file exists
         if not s_file.exists():
             st_url = it.get("stream_url") or it.get("url") or ""
             stream_obj = {
@@ -385,12 +468,9 @@ for cid, cdata in catalogs_data.items():
                     }
                 }
             s_file.write_text(json.dumps(stream_obj, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
-            written_streams += 1
 
-print(f"Newly created: {written_metas} meta files, {written_streams} stream files.")
-
-# 5. WRITE PAGINATED CATALOG FILES
-print("\n=== Step 4: Refreshing and Writing Paginated Catalog Files ===")
+# 7. WRITE PAGINATED CATALOGS & PRE-COMPUTED SEARCH FILES
+print("\n=== Step 5: Writing Paginated Catalogs & Search Indexes ===")
 cat_movie_dir = REPO_ROOT / "catalog" / "movie"
 if cat_movie_dir.exists():
     for item in cat_movie_dir.iterdir():
@@ -399,12 +479,19 @@ if cat_movie_dir.exists():
         elif item.suffix == ".json":
             item.unlink()
 
+COMMON_SEARCH_TERMS = [
+    "shower", "bath", "twerk", "booty", "strip", "haley", "pakistani",
+    "desi", "mms", "solo", "amateur", "couple", "creators", "selfie", "mirror"
+]
+
 def write_paginated_catalog(cat_dir: Path, metas: list):
     cat_dir.mkdir(parents=True, exist_ok=True)
+    # Root catalog (Page 0)
     base = {"metas": metas[:PAGE_SIZE]}
     (cat_dir.parent / f"{cat_dir.name}.json").write_text(
         json.dumps(base, ensure_ascii=False, separators=(",", ":")), encoding="utf-8"
     )
+    # Skip pages
     for skip in range(PAGE_SIZE, len(metas), PAGE_SIZE):
         chunk = metas[skip : skip + PAGE_SIZE]
         skip_file = cat_dir / f"skip={skip}.json"
@@ -412,6 +499,15 @@ def write_paginated_catalog(cat_dir: Path, metas: list):
             json.dumps({"metas": chunk}, ensure_ascii=False, separators=(",", ":")),
             encoding="utf-8",
         )
+    # Pre-computed search index files for static hosting
+    for term in COMMON_SEARCH_TERMS:
+        matches = [m for m in metas if term.lower() in (m["name"] + " " + " ".join(m.get("genres", []))).lower()][:PAGE_SIZE]
+        if matches:
+            search_file = cat_dir / f"search={term}.json"
+            search_file.write_text(
+                json.dumps({"metas": matches}, ensure_ascii=False, separators=(",", ":")),
+                encoding="utf-8",
+            )
 
 catalogs_manifest = []
 ALL_CATALOG_ORDER = [
@@ -434,17 +530,20 @@ for cid in ALL_CATALOG_ORDER:
         "type": "movie",
         "id": cid,
         "name": cdata["name"],
-        "extra": [{"name": "skip", "isRequired": False}]
+        "extra": [
+            {"name": "search", "isRequired": False},
+            {"name": "skip", "isRequired": False}
+        ]
     })
 
-# 6. UPDATE MANIFEST.JSON
-print("\n=== Step 5: Updating manifest.json ===")
+# 8. UPDATE MANIFEST.JSON
+print("\n=== Step 6: Updating manifest.json ===")
 manifest = {
     "id": "com.savaa.stremio.solo",
-    "version": "5.261027.0135",
+    "version": "5.261027.0200",
     "name": "Natural Solo, Couples & Desi MMS Suite",
     "description": (
-        f"Curated Stremio Master Suite: {total_all_videos} videos across 8 categories. "
+        f"Curated Stremio Master Suite: {total_active} videos across 8 categories. "
         f"Direct 1080p+/4K Natural Solo & Couples + Authentic Mastiraja & FSIBlog Desi MMS Leaks. "
         f"Filtered and Verified."
     ),
@@ -456,8 +555,8 @@ manifest = {
 }
 (REPO_ROOT / "manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
 
-# 7. GENERATE M3U PLAYLISTS
-print("\n=== Step 6: Generating M3U Playlists ===")
+# 9. GENERATE M3U PLAYLISTS
+print("\n=== Step 7: Generating M3U Playlists ===")
 m3u_all = ["#EXTM3U", "#PLAYLIST:Stremio Curated Master Suite"]
 m3u_4k = ["#EXTM3U", "#PLAYLIST:Stremio 4K Master Suite"]
 m3u_desi = ["#EXTM3U", "#PLAYLIST:Desi Leaked MMS & Pakistani Suite"]
@@ -495,16 +594,4 @@ for cid in ALL_CATALOG_ORDER[5:]:
 (REPO_ROOT / "playlist_4k.m3u").write_text("\n".join(m3u_4k), encoding="utf-8")
 (REPO_ROOT / "playlist_desi.m3u").write_text("\n".join(m3u_desi), encoding="utf-8")
 
-# 8. SAVE AUDIT LOG
-print("\n=== Step 7: Saving Removal Audit Log ===")
-audit_data = {}
-for cid, cdata in catalogs_data.items():
-    audit_data[cid] = {
-        "name": cdata["name"],
-        "kept_count": len(cdata["items"]),
-        "removed_count": len(cdata["removed"]),
-        "removed_items": [{"id": r[0], "name": r[1], "reason": r[2]} for r in cdata["removed"]]
-    }
-(REPO_ROOT / "removed_items_audit.json").write_text(json.dumps(audit_data, indent=2, ensure_ascii=False), encoding="utf-8")
-
-print("✅ BUILD COMPLETE! All 8 catalogs paginated, manifest bumped, stream files verified.")
+print("\n✅ BUILD COMPLETE! All 8 catalogs ranked & paginated, search enabled, manifest v5.261027.0200 written.")
