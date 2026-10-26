@@ -1,8 +1,8 @@
 {
-  "id": "com.lo.xfree.hq",
-  "version": "2.261026.1500",
-  "name": "xfree HQ + Desi MMS (Curated 4K & Leaks)",
-  "description": "Savaa curated master suite: 6668 videos. 5 Curated 4K/1080p rows + 2 Authentic Desi MMS & Tease rows. Zero junk, pure direct high-bitrate streaming.",
+  "id": "com.savaa.stremio.solo",
+  "version": "3.261026.1550",
+  "name": "Natural Solo & Desi MMS (1080p+)",
+  "description": "Curated Stremio Master Suite: 2450 videos across 7 categories. 1080p+/4K Natural Solo & Authentic Desi/Pakistani Leaks. Strictly zero males, zero couples, zero toys, pure natural aesthetics.",
   "resources": [
     "catalog",
     "meta",
@@ -19,6 +19,28 @@
   "catalogs": [
     {
       "type": "movie",
+      "id": "xfhq_thick_booty",
+      "name": "Thick Booty & Curvy Flaunt (1080p+)",
+      "extra": [
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "xfhq_phone_selfie",
+      "name": "Phonecam & Mirror Selfie Tease (1080p+)",
+      "extra": [
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
       "id": "xfhq_shower_wet",
       "name": "Nude Shower & Wet Bath (1080p+)",
       "extra": [
@@ -30,41 +52,19 @@
     },
     {
       "type": "movie",
-      "id": "xfhq_latina_solo",
-      "name": "Latina Solo & Curves (1080p+)",
-      "extra": [
-        {
-          "name": "skip",
-          "isRequired": false
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "xfhq_thick_booty",
-      "name": "Thick Booty, Curvy & Twerk (1080p+)",
-      "extra": [
-        {
-          "name": "skip",
-          "isRequired": false
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "xfhq_couple_girlgirl",
-      "name": "Real Couple & Girl-Girl (1080p+)",
-      "extra": [
-        {
-          "name": "skip",
-          "isRequired": false
-        }
-      ]
-    },
-    {
-      "type": "movie",
       "id": "xfhq_solo_tease",
-      "name": "Solo Tease & Strip (1080p+)",
+      "name": "Pure Solo Tease & Strip (1080p+)",
+      "extra": [
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "xfhq_desi_nude",
+      "name": "Desi Nude (Solo & Natural)",
       "extra": [
         {
           "name": "skip",
@@ -75,7 +75,7 @@
     {
       "type": "movie",
       "id": "xfhq_desi_mms",
-      "name": "Desi Leaked MMS & Viral Phonecam (480p+)",
+      "name": "Desi Leaked MMS (Phonecam Solo)",
       "extra": [
         {
           "name": "skip",
@@ -85,8 +85,8 @@
     },
     {
       "type": "movie",
-      "id": "xfhq_desi_tease",
-      "name": "Desi Girlfriend & Bhabhi Tease (480p+)",
+      "id": "xfhq_desi_pakistan",
+      "name": "Pakistani Solo & Cam Leaks",
       "extra": [
         {
           "name": "skip",

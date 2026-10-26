@@ -1,15 +1,21 @@
 """
-Full Suite Rebuilder for vidi-4k
-Integrates:
-- 5 xfree Curated Catalogs (1080p+ & 4K)
-- 2 Desi MMS Curated Catalogs (480p+ Direct Cloudflare CDN)
-- Generates meta & stream files for Desi items
-- Updates manifest.json with 7 premier catalogs
-- Generates playlist.m3u, playlist_4k.m3u, playlist_desi.m3u
+Master Suite Rebuilder for Stremio: 100% Natural Solo & Authentic Curation
+Strictly excludes:
+- Any male performers, dudes, penetration, couples, blowjobs, groaning guys, male names
+- Pregnant women / baby bumps / maternity
+- Black / Ebony categories
+- Old / mature / granny / aging women
+- Anime / 3D / Hentai / cartoons / cosplay
+- Flat / very thin / skinny / petite bodies (curvy & thick natural figures only)
+- Weird rear gaping / extreme openings / prolapse
+- Group scenes / threesomes / orgies
+- Rough / hardcore / BDSM / choking / slapping / submissive / pain / deflowering
+- Toys / dildos / vibrators / butt plugs / machines / vegetables
 """
 
 import json
 import re
+import shutil
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).parent
@@ -19,82 +25,81 @@ MASTIRAJA_ALL = REPO_ROOT / "mastiraja_all.json"
 
 PAGE_SIZE = 100
 
-# ── 1. GLOBAL BLOCK LIST ──────────────────────────────────────────────────────
-BLOCK_PATTERNS = re.compile(r"""
-    \btentacle\b | \bhorror\b | \bscreaming\b | prison\s*parade |
-    \bpiss\b | \burine\b | \bpee\b | watersport | \bscat\b |
-    pgad | unusual\s*people | medical\s*award |
-    \bzucchini\b | vegetable | \bveggie\b |
-    wifebucket | 33\s*minutes | 36\s*minute |
-    glory\s*hole | monster\s*cock | trophy\s*wife |
-    sodom | gomorrah | czech\s*fantasy |
-    \bbestial\b | \bbizarre\b | extreme\s*insertion |
-    riding\s*dirty | rv\s*encounter |
-    big\s*dick\s*\d | mike\s*big\s*dick |
-    compilation.*\d{2,}\s*min |
-    \bchoking\s*down\b | destroys.*tight |
-    unrealporn | festivalslut |
-    getting\s*fucked\s*hard | fucked\s*hard |
-    redneck | \bwreckin\b | john\s*\d\b | bdsm\s*orgy
-""", re.VERBOSE | re.IGNORECASE)
+# 1. COMPREHENSIVE NEGATIVE FILTER (Regex)
+BLOCK_EVERYTHING = re.compile(r"""(?i)\b(
+    # Male roles & references
+    dude|dudes|guy|guys|man|men|male|males|boy|boys|boyfriend|boyfriends|bf|husband|husbands|lover|lovers|uncle|boss|driver|handyman|
+    devar|jeth|jija|brother|stepbro|stepbrother|stepdad|father|son|doctor|plumber|stranger|cousin|tau\s*ji|chacha|mama|sardar|
+    partner|partners|neighbor|neighbors|client|clients|customer|customers|pimp|teacher|sir|servant|guard|watchman|escort|fwb|
+    daddy|daddies|sugar\s*daddy|baby\s*daddy|
+    he|him|his|cock|cocks|dick|dicks|penis|shaft|balls|bwc|bbc|lund|loda|chochi|
+    danny\s*d|johnny\s*sins|jordi|keiran\s*lee|manuel\s*ferrara|jmac|
+    
+    # Acts with male / couple / oral / penetration / sex
+    sex|creampie|creampies|deepthroat|throat|facial|facials|bj|blowjob|blowjobs|handjob|handjobs|
+    suck\w*|swallow\w*|cum\s*in|cum\s*on|cumshot\w*|
+    doggy|doggystyle|missionary|cowgirl|penetrat\w*|thrust\w*|pounded|pounding|pound|drilling|drilled|drill|
+    breeding|bred|breed|piped|piping|pipe|railed|railing|rail|fucking|fucked|fuck|fucks|chudai|
+    couple|couples|amateurcouple|realcouple|duo|interracial|honeymoon|quickie|suhagraat|
+    split\w*|deflower\w*|virgin|dard|pain\w*|screaming|cry\w*|destroy\w*|destruction|
+    ride|rides|riding|rode|getting\s*cum|
+    
+    # Age safety: Boundary 1 enforcement
+    teen|teens|underage|schoolgirl|minor|
+    
+    # 1. Pregnant ladies
+    pregnant|pregnancy|baby\s*bump|expecting|maternity|
+    
+    # 2. Black color ladies
+    ebony|black\s*girl|black\s*woman|dark\s*skin|
+    
+    # 3. Old ladies
+    granny|mature|gilf|grandma|old\s*woman|elderly|wrinkled|senior|aged\s*woman|
+    
+    # 4. Anime / 3D / Cartoons
+    anime|hentai|3d|cartoon|animation|animated|sfm|blender|cosplay|manga|
+    
+    # 5. Flat / Very Thin / Skinny
+    flat|flat\s*chest|flat\s*ass|skinny|very\s*thin|bony|petite|tiny|small\s*tits|small\s*boobs|
+    
+    # 6. Weird back / gaping / extreme opening
+    gape|gaping|prolapse|goatse|fist|fisting|extreme\s*anal|speculum|spread\s*wide\s*open|
+    
+    # 7. Groups
+    group|orgy|gangbang|threesome|foursome|swinger|party|
+    
+    # 8. Being so hard / rough / BDSM
+    rough|hardcore|slap\w*|choke\w*|bdsm|torture|bondage|tied|abuse|punish\w*|slave|submissive|submission|master|mistress|dominat\w*|owned|
+    
+    # 9. Using toys / plugs / objects / vegetables
+    toy|toys|dildo|dildos|vibrator|vibrators|sybian|machine|magic\s*wand|wand|strap|strapon|plug|anal\s*plug|butt\s*plug|
+    carrot|cucumber|banana|vegetable|belan|bottle|brush|
+    
+    # Western stars in Desi
+    lena\s*the\s*plug|violet\s*myers|riley\s*reid|lana\s*rhoades|mia\s*malkova|eva\s*elfie|angela\s*white|abella\s*danger|kendra\s*lust|brandi\s*love|cory\s*chase|alexis\s*texas|emily\s*emika|autumn\s*falls|gabbie\s*carter|leah\s*gotti|abigaiil\s*morris|sweetie\s*fox|
+    
+    # Filth / Other
+    pee|piss|pissing|scat|toilet|watersport
+)\b|takes?\s*(a|his|big|cock|dick|screaming)|used\s*by|fucked\s*by|choking\s*down|splits?\s*her|getting\s*fingered|holes?\s*filled|stretched\s*by|legs\s*on""", re.VERBOSE)
 
-WESTERN_STARS = re.compile(r"(?i)\b(violet myers|riley reid|lana rhoades|mia malkova|eva elfie|angela white|abella danger|kendra lust|brandi love|cory chase|alexis texas)\b")
+# 2. DISALLOWED TAG SETS
+TOY_TAGS = {'Dildo', 'GiantDildo', 'HugeAnalDildo', 'Vibrator', 'Sybian', 'SexToys', 'Toy', 'Toys', 'AnalPlug', 'ButtPlug'}
+PREGNANT_TAGS = {'Pregnant', 'PregnantSolo', 'PregnantTits'}
+OLD_TAGS = {'Granny', 'Mature', 'GILF', 'Old'}
+SKINNY_TAGS = {'Skinny', 'Petite', 'SmallTits', 'Tiny'}
+ANIME_TAGS = {'Hentai', 'Anime', '3D', 'Cosplay'}
+EBONY_TAGS = {'Ebony', 'Black'}
+GROUP_TAGS = {'Threesome', 'Foursome', 'Group', 'Orgy', 'Couples', 'AmateurCouple', 'RealCouple'}
+ROUGH_TAGS = {'BDSM', 'Rough', 'Bondage'}
 
-# ── 2. XFREE 5 CATALOGS ───────────────────────────────────────────────────────
-XFREE_CATALOGS = [
-    {
-        "id": "xfhq_shower_wet",
-        "name": "Nude Shower & Wet Bath (1080p+)",
-        "require_tags": {"Shower", "Bath", "Soapy"},
-        "require_any": True,
-        "block_tags": {"Pissing", "Tentacle", "Horror", "GiantDildo", "HugeAnalDildo",
-                       "Couples", "AmateurCouple", "Blowjob", "Facial", "Cumshot"},
-        "block_title": re.compile(r"(?i)(tentacle|horror|piss|screaming|monster|wifebucket|compilation|fucked hard|getting fuck|fuck.*shower|blowjob|cock|dick|pounded)"),
-    },
-    {
-        "id": "xfhq_latina_solo",
-        "name": "Latina Solo & Curves (1080p+)",
-        "require_tags": {"Latina", "Latin"},
-        "require_any": True,
-        "block_tags": {"Pissing", "GiantDildo", "HugeAnalDildo",
-                       "Blowjob", "Facial", "Cumshot"},
-        "block_title": re.compile(r"(?i)(tentacle|horror|piss|wifebucket|compilation|blowjob|fucked|cock|dick|pounded|cumshot|facial|gangbang)"),
-    },
-    {
-        "id": "xfhq_thick_booty",
-        "name": "Thick Booty, Curvy & Twerk (1080p+)",
-        "require_tags": {"BigAss", "BubbleButt", "Twerking", "Ass", "Curvy",
-                         "ThickBooty", "BigButt", "Booty", "Thick"},
-        "require_any": True,
-        "block_tags": {"Pissing", "GiantDildo", "HugeAnalDildo",
-                       "Blowjob", "Facial", "Cumshot", "AnatPlay"},
-        "block_title": re.compile(r"(?i)(tentacle|horror|piss|wifebucket|blowjob|fucked|cock|dick|pounded|cumshot|facial|gangbang|creampie|wreckin|greasy|redneck|john\s*\d)"),
-    },
-    {
-        "id": "xfhq_couple_girlgirl",
-        "name": "Real Couple & Girl-Girl (1080p+)",
-        "require_tags": {"Couples", "AmateurCouple", "Homemade", "Lesbians",
-                         "Girls", "Lesbian", "GirlOnGirl", "Fucking",
-                         "Doggystyle", "Cowgirl", "Missionary", "Blowjob",
-                         "RealCouple", "Creampie"},
-        "require_any": True,
-        "block_tags": {"Pissing", "Scat", "Tentacle", "Horror", "GiantDildo", "HugeAnalDildo"},
-        "block_title": re.compile(r"(?i)(tentacle|horror|piss|prison|wifebucket|pgad|unusual people|zucchini|sodom|gomorrah|glory hole|czech fantasy|screaming|cocks and pussies galore|unrealporn|redneck|john\s*\d)"),
-    },
-    {
-        "id": "xfhq_solo_tease",
-        "name": "Solo Tease & Strip (1080p+)",
-        "require_tags": {"Solo", "Teasing", "Striptease", "Onlyfans", "Lingerie",
-                         "Undress", "Selfie", "NakedSelfie", "Beautiful",
-                         "Naked", "Flashing", "OnlyfansModels", "Amateurs",
-                         "Masturbation", "Fingering", "Orgasm", "Dildo",
-                         "BigTits", "Blonde", "Brunette", "Tattoo", "Shaved"},
-        "require_any": True,
-        "block_tags": {"Pissing", "Scat", "Tentacle", "Horror", "GiantDildo", "HugeAnalDildo",
-                       "Blowjob", "Facial", "Cumshot", "BigCock"},
-        "block_title": re.compile(r"(?i)(tentacle|horror|piss|prison|wifebucket|pgad|unusual people|zucchini|sodom|gomorrah|glory hole|czech fantasy|compilation.*\d{2}\s*min|blowjob|fucked.*him|rides.*him|pounded|cumshot|facial|cock|big dick|riding dirty|screaming|chaos|orgy|jerked|bdsm)"),
-    },
-]
+DISALLOWED_TAGS = TOY_TAGS | PREGNANT_TAGS | OLD_TAGS | SKINNY_TAGS | ANIME_TAGS | EBONY_TAGS | GROUP_TAGS | ROUGH_TAGS
+
+# 3. AUTHENTIC DESI KEYWORDS
+DESI_KW = re.compile(r"""(?i)\b(
+    desi|indian|bhabhi|mallu|tamil|punjabi|pakistani|bengali|marathi|kannada|telugu|
+    saree|salwar|aunty|jatti|randi|baddie|college|hostel|mms|leaked|viral|
+    shikha|pooja|neha|priya|anjali|sonia|minahil
+)\b""", re.VERBOSE)
 
 def to_meta(item):
     return {
@@ -126,49 +131,94 @@ def write_paginated(cat_dir: Path, metas: list):
         )
 
 def main():
-    print("=== Step 1: Processing xfree Videos ===")
+    print("=== Step 1: Processing xfree Solo Videos (Zero Dudes / Zero Toys) ===")
     vidi_pool = json.loads(VIDI_ALL.read_text(encoding="utf-8"))["items"]
     clean_vidi = []
     seen = set()
     for it in vidi_pool:
         if it.get("quality") not in {"4K", "1080p+"}:
             continue
-        txt = it.get("name", "") + " " + " ".join(it.get("tags", []))
-        if BLOCK_PATTERNS.search(txt):
+        tags = set(it.get("tags", []))
+        if tags.intersection(DISALLOWED_TAGS):
+            continue
+        txt = it.get("name", "") + " " + " ".join(tags)
+        if BLOCK_EVERYTHING.search(txt):
             continue
         if it["id"] not in seen:
             seen.add(it["id"])
             clean_vidi.append(it)
 
     clean_vidi.sort(key=lambda x: (0 if x.get("quality") == "4K" else 1, -x.get("likes", 0)))
+    print(f"  Total Clean xfree Solo items: {len(clean_vidi)}")
 
+    # Assign to 4 Stremio Solo Catalogs
     assigned_vidi = set()
     catalog_results = {}
 
-    for cat in XFREE_CATALOGS:
-        matched = []
-        for it in clean_vidi:
-            if it["id"] in assigned_vidi:
-                continue
-            tags = set(it.get("tags", []))
-            name = it.get("name", "")
-            if not tags.intersection(cat["require_tags"]):
-                continue
-            if tags.intersection(cat["block_tags"]):
-                continue
-            if cat["block_title"].search(name):
-                continue
-            matched.append(it)
+    # Catalog 1: Thick Booty & Curvy Flaunt
+    thick_items = []
+    thick_tags = {"BigAss", "BubbleButt", "Twerking", "Ass", "Curvy", "ThickBooty", "BigButt", "Booty", "Thick"}
+    for it in clean_vidi:
+        tags = set(it.get("tags", []))
+        if tags.intersection(thick_tags):
+            thick_items.append(it)
             assigned_vidi.add(it["id"])
+    catalog_results["xfhq_thick_booty"] = {
+        "name": "Thick Booty & Curvy Flaunt (1080p+)",
+        "metas": [to_meta(i) for i in thick_items],
+        "raw_items": thick_items,
+    }
+    print(f"  Thick Booty & Curvy Flaunt: {len(thick_items)} items")
 
-        catalog_results[cat["id"]] = {
-            "name": cat["name"],
-            "metas": [to_meta(i) for i in matched],
-            "raw_items": matched,
-        }
-        print(f"  {cat['name']}: {len(matched)} items")
+    # Catalog 2: Phonecam & Mirror Selfie Tease
+    phone_items = []
+    phone_kws = re.compile(r"(?i)\b(selfie|mirror|phone|snap|snapchat|bedroom|baddie|amateur|hotel|tiktok)\b")
+    for it in clean_vidi:
+        if it["id"] in assigned_vidi:
+            continue
+        tags = set(it.get("tags", []))
+        txt = it["name"] + " " + " ".join(tags)
+        if tags.intersection({"Selfie", "NakedSelfie", "Mirror"}) or phone_kws.search(txt):
+            phone_items.append(it)
+            assigned_vidi.add(it["id"])
+    catalog_results["xfhq_phone_selfie"] = {
+        "name": "Phonecam & Mirror Selfie Tease (1080p+)",
+        "metas": [to_meta(i) for i in phone_items],
+        "raw_items": phone_items,
+    }
+    print(f"  Phonecam & Mirror Selfie Tease: {len(phone_items)} items")
 
-    print("\n=== Step 2: Processing Desi MMS Videos ===")
+    # Catalog 3: Shower & Wet Bath
+    shower_items = []
+    for it in clean_vidi:
+        if it["id"] in assigned_vidi:
+            continue
+        tags = set(it.get("tags", []))
+        if tags.intersection({"Shower", "Bath", "Soapy"}):
+            shower_items.append(it)
+            assigned_vidi.add(it["id"])
+    catalog_results["xfhq_shower_wet"] = {
+        "name": "Nude Shower & Wet Bath (1080p+)",
+        "metas": [to_meta(i) for i in shower_items],
+        "raw_items": shower_items,
+    }
+    print(f"  Nude Shower & Wet Bath: {len(shower_items)} items")
+
+    # Catalog 4: Pure Solo Tease & Strip
+    solo_items = []
+    for it in clean_vidi:
+        if it["id"] in assigned_vidi:
+            continue
+        solo_items.append(it)
+        assigned_vidi.add(it["id"])
+    catalog_results["xfhq_solo_tease"] = {
+        "name": "Pure Solo Tease & Strip (1080p+)",
+        "metas": [to_meta(i) for i in solo_items],
+        "raw_items": solo_items,
+    }
+    print(f"  Pure Solo Tease & Strip: {len(solo_items)} items")
+
+    print("\n=== Step 2: Processing Authentic Desi Solo Videos ===")
     desi_pool = json.loads(DESI_ALL.read_text(encoding="utf-8"))["items"]
     if MASTIRAJA_ALL.exists():
         masti_pool = json.loads(MASTIRAJA_ALL.read_text(encoding="utf-8"))["items"]
@@ -179,55 +229,70 @@ def main():
     desi_seen = set()
 
     for it in desi_pool:
-        name = it.get("name", "")
-        tags = it.get("tags", [])
-        txt = name + " " + " ".join(tags)
-        
-        # Block Western stars & global filth (including pee / piss / horror)
-        if WESTERN_STARS.search(name) or BLOCK_PATTERNS.search(txt):
+        tags = set(it.get("tags", []))
+        if tags.intersection(DISALLOWED_TAGS):
             continue
-        
-        # Verify genuine Desi context
-        desi_context = ['desi', 'indian', 'bhabhi', 'mallu', 'tamil', 'village', 'girlfriend',
-                        'wife', 'cheating', 'aunt', 'aunty', 'pakistani', 'punjabi', 'bengali',
-                        'marathi', 'kannada', 'telugu', 'college', 'mms', 'leaked', 'viral',
-                        'chubby', 'saree', 'salwar', 'shikha', 'pooja', 'neha', 'priya',
-                        'anjali', 'sonia', 'newly-married', 'desitales', 'masa49', 'vid65',
-                        'mastiraja', 'amateur', 'baddie', 'metro', 'hostel', 'cuddle']
-        if not any(k in txt.lower() for k in desi_context):
+        txt = it.get("name", "") + " " + " ".join(tags)
+        if BLOCK_EVERYTHING.search(txt):
             continue
-
+        if not DESI_KW.search(txt):
+            continue
         if it["id"] not in desi_seen:
             desi_seen.add(it["id"])
             clean_desi.append(it)
 
-    print(f"  Clean genuine Desi items: {len(clean_desi)}")
+    print(f"  Total Clean Desi Solo items: {len(clean_desi)}")
 
-    # Split into 2 Desi catalogs: MMS/Phonecam vs Solo Tease
-    desi_tease_items = []
-    desi_mms_items = []
+    # Split into 3 Requested Desi Catalogs:
+    # 1. Pakistani Solo & Cam Leaks
+    # 2. Desi Nude (Solo & Natural)
+    # 3. Desi Leaked MMS (Phonecam Solo)
+    paki_pat = re.compile(r"(?i)\b(pakistan|pakistani|lahore|karachi|islamabad|minahil|alina|imsha|alisha)\b")
+    nude_pat = re.compile(r"(?i)\b(nude|naked|strip|shower|bath|boob|boobs|tits|bouncing|flaunt|terrace)\b")
 
-    tease_indicators = re.compile(r"(?i)(strip|tease|cam|solo|seduction|chubby|lingerie|saree|flick|touch|undress|mirror|snap|rub)")
+    assigned_desi = set()
+    paki_items = []
+    nude_items = []
+    mms_items = []
 
     for it in clean_desi:
         txt = it["name"] + " " + " ".join(it.get("tags", []))
-        if tease_indicators.search(txt) and "fuck" not in it["name"].lower():
-            desi_tease_items.append(it)
-        else:
-            desi_mms_items.append(it)
+        if paki_pat.search(txt):
+            paki_items.append(it)
+            assigned_desi.add(it["id"])
 
+    for it in clean_desi:
+        if it["id"] in assigned_desi:
+            continue
+        txt = it["name"] + " " + " ".join(it.get("tags", []))
+        if nude_pat.search(txt):
+            nude_items.append(it)
+            assigned_desi.add(it["id"])
+
+    for it in clean_desi:
+        if it["id"] in assigned_desi:
+            continue
+        mms_items.append(it)
+        assigned_desi.add(it["id"])
+
+    catalog_results["xfhq_desi_nude"] = {
+        "name": "Desi Nude (Solo & Natural)",
+        "metas": [to_meta(i) for i in nude_items],
+        "raw_items": nude_items,
+    }
     catalog_results["xfhq_desi_mms"] = {
-        "name": "Desi Leaked MMS & Viral Phonecam (480p+)",
-        "metas": [to_meta(i) for i in desi_mms_items],
-        "raw_items": desi_mms_items,
+        "name": "Desi Leaked MMS (Phonecam Solo)",
+        "metas": [to_meta(i) for i in mms_items],
+        "raw_items": mms_items,
     }
-    catalog_results["xfhq_desi_tease"] = {
-        "name": "Desi Girlfriend & Bhabhi Tease (480p+)",
-        "metas": [to_meta(i) for i in desi_tease_items],
-        "raw_items": desi_tease_items,
+    catalog_results["xfhq_desi_pakistan"] = {
+        "name": "Pakistani Solo & Cam Leaks",
+        "metas": [to_meta(i) for i in paki_items],
+        "raw_items": paki_items,
     }
-    print(f"  Desi Leaked MMS & Viral Phonecam: {len(desi_mms_items)} items")
-    print(f"  Desi Girlfriend & Bhabhi Tease: {len(desi_tease_items)} items")
+    print(f"  Desi Nude (Solo & Natural): {len(nude_items)} items")
+    print(f"  Desi Leaked MMS (Phonecam Solo): {len(mms_items)} items")
+    print(f"  Pakistani Solo & Cam Leaks: {len(paki_items)} items")
 
     print("\n=== Step 3: Writing Static Stream & Meta JSONs for Desi Items ===")
     meta_dir = REPO_ROOT / "meta" / "movie"
@@ -237,7 +302,9 @@ def main():
 
     for it in clean_desi:
         vid_id = it["id"]
-        source_name = "Mastiraja 3.1 Mbps" if "masti_" in vid_id else "Cloudflare CDN 1.8 Mbps"
+        is_masti = "masti_" in vid_id
+        source_name = "Mastiraja 3.1 Mbps" if is_masti else "Cloudflare CDN 1.8 Mbps"
+
         # meta file
         m_file = meta_dir / f"{vid_id}.json"
         meta_obj = {
@@ -248,47 +315,61 @@ def main():
                 "poster": it.get("poster") or it.get("thumbnail") or "",
                 "posterShape": "poster",
                 "background": it.get("poster") or it.get("thumbnail") or "",
-                "description": f"Direct {source_name} · Authentic Desi MMS · {', '.join(it.get('tags', [])[:5])}",
-                "genres": it.get("tags", ["Indian", "Desi", "MMS"]),
+                "description": f"Direct {source_name} · Authentic Desi Solo · {', '.join(it.get('tags', [])[:5])}",
+                "genres": it.get("tags", ["Indian", "Desi", "Solo"]),
                 "releaseInfo": "480p+",
                 "runtime": "MMS"
             }
         }
         m_file.write_text(json.dumps(meta_obj, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
 
-        # stream file
+        # stream file with proxyHeaders for Mastiraja to prevent 403 Forbidden
         s_file = stream_dir / f"{vid_id}.json"
-        stream_obj = {
-            "streams": [
-                {
-                    "url": it["stream_url"],
-                    "name": source_name,
-                    "title": f"{it['name']} [{source_name} High Bitrate]",
-                    "behaviorHints": {"notWebReady": False}
-                }
-            ]
+        stream_entry = {
+            "url": it["stream_url"],
+            "name": source_name,
+            "title": f"{it['name']} [{source_name} High Bitrate]",
+            "behaviorHints": {
+                "notWebReady": False
+            }
         }
+        if is_masti:
+            stream_entry["behaviorHints"]["proxyHeaders"] = {
+                "request": {
+                    "Referer": "https://mastiraja.tv/",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                }
+            }
+
+        stream_obj = {"streams": [stream_entry]}
         s_file.write_text(json.dumps(stream_obj, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
 
     print(f"  Wrote {len(clean_desi)} meta & stream JSON files.")
 
-    print("\n=== Step 4: Writing 7 Catalog Pagination Files ===")
+    print("\n=== Step 4: Refreshing Catalog Directories ===")
+    cat_movie_dir = REPO_ROOT / "catalog" / "movie"
+    if cat_movie_dir.exists():
+        for item in cat_movie_dir.iterdir():
+            if item.is_dir():
+                shutil.rmtree(item)
+            elif item.suffix == ".json":
+                item.unlink()
+
     ALL_CATALOG_ORDER = [
-        # Premier xfree
+        # Global Creator Suite
+        ("xfhq_thick_booty", "Thick Booty & Curvy Flaunt (1080p+)"),
+        ("xfhq_phone_selfie", "Phonecam & Mirror Selfie Tease (1080p+)"),
         ("xfhq_shower_wet", "Nude Shower & Wet Bath (1080p+)"),
-        ("xfhq_latina_solo", "Latina Solo & Curves (1080p+)"),
-        ("xfhq_thick_booty", "Thick Booty, Curvy & Twerk (1080p+)"),
-        ("xfhq_couple_girlgirl", "Real Couple & Girl-Girl (1080p+)"),
-        ("xfhq_solo_tease", "Solo Tease & Strip (1080p+)"),
-        # Authentic Desi
-        ("xfhq_desi_mms", "Desi Leaked MMS & Viral Phonecam (480p+)"),
-        ("xfhq_desi_tease", "Desi Girlfriend & Bhabhi Tease (480p+)"),
+        ("xfhq_solo_tease", "Pure Solo Tease & Strip (1080p+)"),
+        # Desi Authentic Suite
+        ("xfhq_desi_nude", "Desi Nude (Solo & Natural)"),
+        ("xfhq_desi_mms", "Desi Leaked MMS (Phonecam Solo)"),
+        ("xfhq_desi_pakistan", "Pakistani Solo & Cam Leaks"),
     ]
 
-    cat_movie_dir = REPO_ROOT / "catalog" / "movie"
     catalogs_manifest = []
 
-    for cid, cname in ALL_CATALOG_ORDER:
+    for cid, _ in ALL_CATALOG_ORDER:
         res = catalog_results[cid]
         cat_dir = cat_movie_dir / cid
         write_paginated(cat_dir, res["metas"])
@@ -302,13 +383,13 @@ def main():
     print("\n=== Step 5: Updating manifest.json ===")
     total_all_videos = sum(len(catalog_results[c[0]]["metas"]) for c in ALL_CATALOG_ORDER)
     manifest = {
-        "id": "com.lo.xfree.hq",
-        "version": "2.261026.1500",
-        "name": "xfree HQ + Desi MMS (Curated 4K & Leaks)",
+        "id": "com.savaa.stremio.solo",
+        "version": "3.261026.1550",
+        "name": "Natural Solo & Desi MMS (1080p+)",
         "description": (
-            f"Savaa curated master suite: {total_all_videos} videos. "
-            f"5 Curated 4K/1080p rows + 2 Authentic Desi MMS & Tease rows. "
-            f"Zero junk, pure direct high-bitrate streaming."
+            f"Curated Stremio Master Suite: {total_all_videos} videos across 7 categories. "
+            f"1080p+/4K Natural Solo & Authentic Desi/Pakistani Leaks. "
+            f"Strictly zero males, zero couples, zero toys, pure natural aesthetics."
         ),
         "resources": ["catalog", "meta", "stream"],
         "types": ["movie"],
@@ -319,14 +400,11 @@ def main():
     (REPO_ROOT / "manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
 
     print("\n=== Step 6: Generating M3U Playlists ===")
-    # 1. playlist.m3u (xfree)
-    # 2. playlist_4k.m3u (xfree 4K)
-    # 3. playlist_desi.m3u (Desi MMS)
-    m3u_all = ["#EXTM3U", "#PLAYLIST:xfree HQ Curated Vertical"]
-    m3u_4k = ["#EXTM3U", "#PLAYLIST:xfree 4K Curated Vertical"]
-    m3u_desi = ["#EXTM3U", "#PLAYLIST:Desi Leaked MMS & Authentic Phonecam"]
+    m3u_all = ["#EXTM3U", "#PLAYLIST:Stremio Curated Natural Solo"]
+    m3u_4k = ["#EXTM3U", "#PLAYLIST:Stremio 4K Natural Solo"]
+    m3u_desi = ["#EXTM3U", "#PLAYLIST:Desi Authentic Solo MMS"]
 
-    for cid, _ in ALL_CATALOG_ORDER[:5]:
+    for cid, _ in ALL_CATALOG_ORDER[:4]:
         cname = catalog_results[cid]["name"].split(" (")[0]
         for it in catalog_results[cid]["raw_items"]:
             dur = it.get("duration", 0)
@@ -342,7 +420,7 @@ def main():
                 m3u_4k.append(line_inf)
                 m3u_4k.append(stream)
 
-    for cid in ["xfhq_desi_mms", "xfhq_desi_tease"]:
+    for cid in ["xfhq_desi_nude", "xfhq_desi_mms", "xfhq_desi_pakistan"]:
         cname = catalog_results[cid]["name"].split(" (")[0]
         for it in catalog_results[cid]["raw_items"]:
             dur = 120
@@ -350,8 +428,12 @@ def main():
             title = it.get("name", "").replace('"', '').replace(',', ' ')
             logo = it.get("poster") or it.get("thumbnail") or ""
             stream = it.get("stream_url")
-            line_inf = f'#EXTINF:{dur} tvg-id="{iid}" tvg-name="{title}" tvg-logo="{logo}" group-title="{cname}",{title} [480p+ Desi MMS]'
+            is_masti = "masti_" in iid
+            line_inf = f'#EXTINF:{dur} tvg-id="{iid}" tvg-name="{title}" tvg-logo="{logo}" group-title="{cname}",{title} [480p+ Desi Solo]'
             m3u_desi.append(line_inf)
+            if is_masti:
+                m3u_desi.append("#EXTVLCOPT:http-referrer=https://mastiraja.tv/")
+                m3u_desi.append("#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
             m3u_desi.append(stream)
 
     (REPO_ROOT / "playlist.m3u").write_text("\n".join(m3u_all), encoding="utf-8")
@@ -360,7 +442,7 @@ def main():
 
     print(f"  playlist.m3u: {len(m3u_all)//2} items")
     print(f"  playlist_4k.m3u: {len(m3u_4k)//2} items (pure 4K)")
-    print(f"  playlist_desi.m3u: {len(m3u_desi)//2} items (authentic Desi MMS)")
+    print(f"  playlist_desi.m3u: {len(clean_desi)} items (authentic Desi Solo)")
     print("\n✅ MASTER SUITE BUILD COMPLETE!")
 
 if __name__ == "__main__":
