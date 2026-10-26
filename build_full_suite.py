@@ -325,7 +325,8 @@ for it in paki_pool:
         record_exclusion(it, "xfhq_desi_pakistan", "Confirmed dead stream URL")
         continue
     st = it.get("stream_url", "")
-    if not st or st in seen_desi_streams: continue
+    if not st or st in seen_desi_streams or "cdn.fsiblogxx.com" in st:
+        continue
     ok, reason = check_universal(it)
     if ok:
         seen_desi_streams.add(st)
@@ -341,7 +342,8 @@ for it in all_desi_candidates:
         record_exclusion(it, "xfhq_desi_mms", "Confirmed dead stream URL")
         continue
     st = it.get("stream_url", "")
-    if not st or st in seen_desi_streams: continue
+    if not st or st in seen_desi_streams or "cdn.fsiblogxx.com" in st:
+        continue
     txt = it.get("name", "") + " " + " ".join(it.get("tags", []))
 
     # Drop Western porn star imports from Desi collections
@@ -450,6 +452,10 @@ for cid, cdata in catalogs_data.items():
 
         if not s_file.exists():
             st_url = it.get("stream_url") or it.get("url") or ""
+            # Vidi and Stremio Web/iPhone cannot send custom request headers.
+            # Never emit proxyHeaders or dead cdn.fsiblogxx.com streams.
+            if "cdn.fsiblogxx.com" in st_url:
+                continue
             stream_obj = {
                 "streams": [
                     {
@@ -460,13 +466,6 @@ for cid, cdata in catalogs_data.items():
                     }
                 ]
             }
-            if "cdn.fsiblogxx.com" in st_url:
-                stream_obj["streams"][0]["behaviorHints"]["proxyHeaders"] = {
-                    "request": {
-                        "Referer": "https://www.fsiblogxx.com/",
-                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-                    }
-                }
             s_file.write_text(json.dumps(stream_obj, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
 
 # 7. WRITE PAGINATED CATALOGS & PRE-COMPUTED SEARCH FILES

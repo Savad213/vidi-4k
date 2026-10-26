@@ -169,6 +169,10 @@ def refresh_fsiblogxx(existing_stream_urls):
         slug_m = re.search(r'fsiblogxx\.com/([^/]+)/?', v_url)
         slug = slug_m.group(1) if slug_m else re.sub(r'[^a-zA-Z0-9]', '_', raw_title[:30])
 
+        # Drop cdn.fsiblogxx.com streams because they require Referer header and 403 on iOS/Vidi
+        if stream_url and "cdn.fsiblogxx.com" in stream_url:
+            stream_url = ""
+
         if stream_url and stream_url not in existing_stream_urls:
             new_items.append({
                 "id": f"fsixx_{slug}",
@@ -257,7 +261,7 @@ def run_weekly_refresh():
         f_file.write_text(json.dumps(cur, indent=2, ensure_ascii=False), encoding='utf-8')
         changed = True
 
-    # 5. Trigger Master Rebuild
+    # 5. Trigger Master Rebuild & Post-Build No-Header Filter
     print("\nTriggering build_full_suite.py...")
     import subprocess
     cmd = [sys.executable, str(REPO_ROOT / "build_full_suite.py")]
@@ -265,6 +269,13 @@ def run_weekly_refresh():
     print(res.stdout)
     if res.stderr:
         print("Build Warnings/Errors:", res.stderr)
+
+    print("\nRunning post-build no-header stream audit (fix_header_streams.py)...")
+    cmd_fix = [sys.executable, str(REPO_ROOT / "fix_header_streams.py")]
+    res_fix = subprocess.run(cmd_fix, cwd=str(REPO_ROOT), capture_output=True, text=True)
+    print(res_fix.stdout)
+    if res_fix.stderr:
+        print("Header fix warnings:", res_fix.stderr)
 
     print("\n=== Weekly Refresh Run Completed Successfully ===")
 
