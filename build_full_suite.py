@@ -1,8 +1,10 @@
 """
 Master Suite Rebuilder for Stremio:
-- xfree: Solo Nude Shower, Phat Booty & Twerk (No BubbleButt), Real Solo Striptease, Amateur Phonecam (No Masturbation, Zero Dudes, Zero Toys)
-- fsiblogxx: All 482 items from https://www.fsiblogxx.com/ added directly ("DONT CHECK ANY TAGH . ADD ALL")
-- Mastiraja: Curated Desi Creators & Pakistani Solo
+- Strict Anti-Spreading Purge across ALL catalogs (Zero spreading, gaping, wide-open, or spread-cheeks)
+- xfree: Solo Nude Shower, Phat Booty & Twerk (Zero BubbleButt), Real Solo Striptease, Amateur Phonecam (Zero Masturbation, Zero Dudes, Zero Toys)
+- fsiblogxx: Curated Direct MP4 Leaks with Anti-Spreading Purge
+- Pakistani HD: 400+ Authenticated Pakistani MMS & Video Call Leaks (from FSIBlogXX & Mastiraja)
+- Mastiraja: Curated Desi Creators & Solo Nude
 - Pimpbunny Special: HaleyQuinnLA Twerks In Her Bathroom (720p HD Hosted Permanently)
 """
 
@@ -15,10 +17,11 @@ REPO_ROOT = Path(__file__).parent
 VIDI_ALL = REPO_ROOT / "vidi_all.json"
 FSI_XX = REPO_ROOT / "fsiblogxx_all.json"
 MASTIRAJA_ALL = REPO_ROOT / "mastiraja_all.json"
+PAKI_ALL = REPO_ROOT / "pakistani_all.json"
 
 PAGE_SIZE = 100
 
-# 1. XFREE NEGATIVE FILTER
+# 1. STRICT UNIVERSAL NEGATIVE FILTER (Applied to ALL catalogs)
 BLOCK_EVERYTHING = re.compile(r"""(?i)\b(
     dude|dudes|guy|guys|man|men|male|males|boy|boys|boyfriend|boyfriends|bf|husband|husbands|lover|lovers|uncle|boss|driver|handyman|
     devar|jeth|jija|brother|stepbro|stepbrother|stepdad|father|son|doctor|plumber|stranger|cousin|tau\s*ji|chacha|mama|sardar|
@@ -39,7 +42,7 @@ BLOCK_EVERYTHING = re.compile(r"""(?i)\b(
     granny|mature|gilf|grandma|old\s*woman|elderly|wrinkled|senior|aged\s*woman|
     anime|hentai|3d|cartoon|animation|animated|sfm|blender|cosplay|manga|
     flat|flat\s*chest|flat\s*ass|skinny|very\s*thin|bony|petite|tiny|small\s*tits|small\s*boobs|
-    gape|gaping|prolapse|goatse|fist|fisting|extreme\s*anal|speculum|spread\s*wide\s*open|
+    gape|gaping|prolapse|goatse|fist|fisting|extreme\s*anal|speculum|spread\w*|spred\w*|wide\s*open|open\s*wide|cheek\s*spread\w*|leg\s*spread\w*|
     group|orgy|gangbang|threesome|foursome|swinger|party|
     rough|hardcore|slap\w*|choke\w*|bdsm|torture|bondage|tied|abuse|punish\w*|slave|submissive|submission|master|mistress|dominat\w*|owned|
     toy|toys|dildo|dildos|vibrator|vibrators|sybian|machine|magic\s*wand|wand|strap|strapon|plug|anal\s*plug|butt\s*plug|
@@ -47,12 +50,15 @@ BLOCK_EVERYTHING = re.compile(r"""(?i)\b(
     bubblebutt|masturbation|
     lena\s*the\s*plug|violet\s*myers|riley\s*reid|lana\s*rhoades|mia\s*malkova|eva\s*elfie|angela\s*white|abella\s*danger|kendra\s*lust|brandi\s*love|cory\s*chase|alexis\s*texas|emily\s*emika|autumn\s*falls|gabbie\s*carter|leah\s*gotti|abigaiil\s*morris|sweetie\s*fox|
     pee|piss|pissing|scat|toilet|watersport
-)\b|takes?\s*(a|his|big|cock|dick|screaming)|used\s*by|fucked\s*by|choking\s*down|splits?\s*her|getting\s*fingered|holes?\s*filled|stretched\s*by|legs\s*on""", re.VERBOSE)
+)\b|takes?\s*(a|his|big|cock|dick|screaming)|used\s*by|fucked\s*by|choking\s*down|splits?\s*her|getting\s*fingered|holes?\s*filled|stretched\s*by|legs\s*on|spreads?\s*(her|them|legs|cheeks|pussy|ass)""", re.VERBOSE)
 
-DISALLOWED_TAGS = {'Dildo', 'GiantDildo', 'HugeAnalDildo', 'Vibrator', 'Sybian', 'SexToys', 'Toy', 'Toys', 'AnalPlug', 'ButtPlug',
-                   'BubbleButt', 'Masturbation',
-                   'Pregnant', 'PregnantSolo', 'PregnantTits', 'Granny', 'Mature', 'GILF', 'Old', 'Skinny', 'Petite', 'SmallTits', 'Tiny',
-                   'Hentai', 'Anime', '3D', 'Cosplay', 'Ebony', 'Black', 'Threesome', 'Foursome', 'Group', 'Orgy', 'Couples', 'AmateurCouple', 'RealCouple', 'BDSM', 'Rough', 'Bondage'}
+DISALLOWED_TAGS = {
+    'Dildo', 'GiantDildo', 'HugeAnalDildo', 'Vibrator', 'Sybian', 'SexToys', 'Toy', 'Toys', 'AnalPlug', 'ButtPlug',
+    'BubbleButt', 'Masturbation',
+    'Pregnant', 'PregnantSolo', 'PregnantTits', 'Granny', 'Mature', 'GILF', 'Old', 'Skinny', 'Petite', 'SmallTits', 'Tiny',
+    'Hentai', 'Anime', '3D', 'Cosplay', 'Ebony', 'Black', 'Threesome', 'Foursome', 'Group', 'Orgy', 'Couples', 'AmateurCouple', 'RealCouple', 'BDSM', 'Rough', 'Bondage',
+    'SpreadPussy', 'SpreadAss', 'AnalGape', 'Gape', 'FingerSpread', 'Spread', 'Stretching', 'AssSpread', 'SpreadingPussy', 'SpreadLegs'
+}
 
 def to_meta(item):
     return {
@@ -84,7 +90,7 @@ def write_paginated(cat_dir: Path, metas: list):
         )
 
 def main():
-    print("=== Step 1: Processing xfree Solo (Zero BubbleButt, Zero Masturbation) ===")
+    print("=== Step 1: Processing xfree Solo (Zero Spreading, Zero BubbleButt, Zero Masturbation) ===")
     vidi_pool = json.loads(VIDI_ALL.read_text(encoding="utf-8"))["items"]
     clean_vidi = []
     seen = set()
@@ -189,33 +195,59 @@ def main():
     }
     print(f"  Amateur Phonecam & Mirror Selfies: {len(selfie_items)} items")
 
-    print("\n=== Step 2: Processing fsiblogxx.com (All 482 Items) ===")
-    fsixx_pool = json.loads(FSI_XX.read_text(encoding="utf-8"))["items"]
-    print(f"  Loaded {len(fsixx_pool)} direct MP4 videos from fsiblogxx.com")
+    print("\n=== Step 2: Processing fsiblogxx.com (Applying Strict Anti-Spreading Purge) ===")
+    fsixx_raw = json.loads(FSI_XX.read_text(encoding="utf-8"))["items"]
+    fsixx_clean = []
+    seen_fsi = set()
+    for it in fsixx_raw:
+        txt = it.get("name", "") + " " + " ".join(it.get("tags", []))
+        if BLOCK_EVERYTHING.search(txt):
+            continue
+        st = it.get("stream_url")
+        if st and st not in seen_fsi:
+            seen_fsi.add(st)
+            fsixx_clean.append(it)
+    print(f"  Loaded {len(fsixx_clean)} clean direct MP4 videos from fsiblogxx.com (filtered from {len(fsixx_raw)})")
     catalog_results["xfhq_fsixx_mms"] = {
         "name": "Desi Leaked MMS (FSIBlogXX Direct)",
-        "metas": [to_meta(i) for i in fsixx_pool],
-        "raw_items": fsixx_pool,
+        "metas": [to_meta(i) for i in fsixx_clean],
+        "raw_items": fsixx_clean,
     }
 
-    print("\n=== Step 3: Processing Mastiraja Solo & Pakistani Leaks ===")
+    print("\n=== Step 3: Processing Pakistani HD & Desi Creators ===")
+    paki_raw = json.loads(PAKI_ALL.read_text(encoding="utf-8"))["items"] if PAKI_ALL.exists() else []
     masti_pool = json.loads(MASTIRAJA_ALL.read_text(encoding="utf-8"))["items"]
     
     paki_items = []
     desi_creator_items = []
-    paki_pat = re.compile(r"(?i)\b(pakistan|pakistani|lahore|karachi|islamabad|minahil|alina|imsha|alisha)\b")
+    seen_paki_streams = set()
+    paki_pat = re.compile(r"(?i)\b(pakistan|pakistani|lahore|karachi|islamabad|rawalpindi|peshawar|punjabi|pathan|minahil|alina|imsha|alisha|ayesha)\b")
     
-    for it in masti_pool:
-        txt = it["name"] + " " + " ".join(it.get("tags", []))
+    # 1. Harvested Pakistani Collection
+    for it in paki_raw:
+        txt = it.get("name", "") + " " + " ".join(it.get("tags", []))
         if BLOCK_EVERYTHING.search(txt):
             continue
-        if paki_pat.search(txt):
+        st = it.get("stream_url")
+        if st and st not in seen_paki_streams:
+            seen_paki_streams.add(st)
             paki_items.append(it)
+
+    # 2. Mastiraja Pool
+    for it in masti_pool:
+        txt = it.get("name", "") + " " + " ".join(it.get("tags", []))
+        if BLOCK_EVERYTHING.search(txt):
+            continue
+        st = it.get("stream_url")
+        if paki_pat.search(txt):
+            if st and st not in seen_paki_streams:
+                seen_paki_streams.add(st)
+                paki_items.append(it)
         else:
             desi_creator_items.append(it)
 
     catalog_results["xfhq_desi_pakistan"] = {
-        "name": "Pakistani Solo & Cam Leaks",
+        "name": "Pakistani Solo & Cam Leaks (HD)",
         "metas": [to_meta(i) for i in paki_items],
         "raw_items": paki_items,
     }
@@ -224,7 +256,7 @@ def main():
         "metas": [to_meta(i) for i in desi_creator_items],
         "raw_items": desi_creator_items,
     }
-    print(f"  Pakistani Solo & Cam Leaks: {len(paki_items)} items")
+    print(f"  Pakistani Solo & Cam Leaks (HD): {len(paki_items)} items")
     print(f"  Desi Creators & Nude Solo: {len(desi_creator_items)} items")
 
     print("\n=== Step 4: Writing Static Stream & Meta JSONs for All Desi & PB Items ===")
@@ -239,11 +271,11 @@ def main():
     m_file.write_text(json.dumps({"meta": to_meta(haley_item)}, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
     s_file.write_text(json.dumps({"streams": [{"url": haley_item["stream_url"], "name": "Permanent 720p HD", "title": "HaleyQuinnLA Twerks In Her Bathroom [720p HD]", "behaviorHints": {"notWebReady": False}}]}, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
 
-    all_desi_items = fsixx_pool + paki_items + desi_creator_items
+    all_desi_items = fsixx_clean + paki_items + desi_creator_items
     for it in all_desi_items:
         vid_id = it["id"]
-        is_fsixx = "fsixx_" in vid_id
-        is_masti = "masti_" in vid_id
+        is_fsixx = "fsixx_" in vid_id or it.get("source") == "FSIBlogXX" or "cdn.fsiblogxx.com" in it.get("stream_url", "")
+        referer = "https://www.fsiblogxx.com/" if is_fsixx else "https://mastiraja.tv/"
         source_name = "FSIBlogXX Direct CDN" if is_fsixx else "Mastiraja 3.1 Mbps"
 
         # meta file
@@ -266,7 +298,6 @@ def main():
 
         # stream file with appropriate proxyHeaders
         s_file = stream_dir / f"{vid_id}.json"
-        referer = "https://www.fsiblogxx.com/" if is_fsixx else "https://mastiraja.tv/"
         stream_entry = {
             "url": it["stream_url"],
             "name": source_name,
@@ -304,7 +335,7 @@ def main():
         # Desi Authentic Suite
         ("xfhq_fsixx_mms", "Desi Leaked MMS (FSIBlogXX Direct)"),
         ("xfhq_desi_creators", "Desi Creators & Nude Solo (Mastiraja)"),
-        ("xfhq_desi_pakistan", "Pakistani Solo & Cam Leaks"),
+        ("xfhq_desi_pakistan", "Pakistani Solo & Cam Leaks (HD)"),
     ]
 
     catalogs_manifest = []
@@ -324,7 +355,7 @@ def main():
     total_all_videos = sum(len(catalog_results[c[0]]["metas"]) for c in ALL_CATALOG_ORDER)
     manifest = {
         "id": "com.savaa.stremio.solo",
-        "version": "4.261026.1610",
+        "version": "4.261026.1625",
         "name": "Natural Solo & Desi MMS Suite",
         "description": (
             f"Curated Stremio Master Suite: {total_all_videos} videos across 7 categories. "
@@ -333,7 +364,7 @@ def main():
         ),
         "resources": ["catalog", "meta", "stream"],
         "types": ["movie"],
-        "idPrefixes": ["xfhq", "fsixx_", "masti_", "pb_"],
+        "idPrefixes": ["xfhq", "fsixx_", "masti_", "pb_", "paki_"],
         "catalogs": catalogs_manifest,
         "behaviorHints": {"adult": True, "configurable": False},
     }
@@ -368,7 +399,7 @@ def main():
             title = it.get("name", "").replace('"', '').replace(',', ' ')
             logo = it.get("poster") or it.get("thumbnail") or ""
             stream = it.get("stream_url")
-            is_fsixx = "fsixx_" in iid
+            is_fsixx = "fsixx_" in iid or it.get("source") == "FSIBlogXX" or "cdn.fsiblogxx.com" in it.get("stream_url", "")
             ref = "https://www.fsiblogxx.com/" if is_fsixx else "https://mastiraja.tv/"
             line_inf = f'#EXTINF:{dur} tvg-id="{iid}" tvg-name="{title}" tvg-logo="{logo}" group-title="{cname}",{title} [Desi MMS]'
             m3u_desi.append(line_inf)

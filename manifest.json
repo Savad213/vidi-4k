@@ -1,8 +1,8 @@
 {
   "id": "com.savaa.stremio.solo",
-  "version": "4.261026.1610",
+  "version": "4.261026.1625",
   "name": "Natural Solo & Desi MMS Suite",
-  "description": "Curated Stremio Master Suite: 1980 videos across 7 categories. 1080p+/4K Natural Solo & Authentic FSIBlogXX / Mastiraja Leaks. Direct high-bitrate streaming.",
+  "description": "Curated Stremio Master Suite: 1650 videos across 7 categories. 1080p+/4K Natural Solo & Authentic FSIBlogXX / Mastiraja Leaks. Direct high-bitrate streaming.",
   "resources": [
     "catalog",
     "meta",
@@ -15,7 +15,8 @@
     "xfhq",
     "fsixx_",
     "masti_",
-    "pb_"
+    "pb_",
+    "paki_"
   ],
   "catalogs": [
     {
@@ -87,7 +88,7 @@
     {
       "type": "movie",
       "id": "xfhq_desi_pakistan",
-      "name": "Pakistani Solo & Cam Leaks",
+      "name": "Pakistani Solo & Cam Leaks (HD)",
       "extra": [
         {
           "name": "skip",
