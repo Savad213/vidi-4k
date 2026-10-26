@@ -3,6 +3,7 @@ Master Suite Rebuilder for Stremio:
 - xfree: Solo Nude Shower, Phat Booty & Twerk (No BubbleButt), Real Solo Striptease, Amateur Phonecam (No Masturbation, Zero Dudes, Zero Toys)
 - fsiblogxx: All 482 items from https://www.fsiblogxx.com/ added directly ("DONT CHECK ANY TAGH . ADD ALL")
 - Mastiraja: Curated Desi Creators & Pakistani Solo
+- Pimpbunny Special: HaleyQuinnLA Twerks In Her Bathroom (720p HD Hosted Permanently)
 """
 
 import json
@@ -106,22 +107,23 @@ def main():
     catalog_results = {}
     assigned_vidi = set()
 
-    # 1. Solo Nude Shower & Wet Bath
-    shower_items = []
-    for it in clean_vidi:
-        tags = set(it.get("tags", []))
-        if tags.intersection({"Shower", "Bath", "Soapy"}):
-            shower_items.append(it)
-            assigned_vidi.add(it["id"])
-    catalog_results["xfhq_shower_wet"] = {
-        "name": "Solo Nude Shower & Wet Bath (1080p+)",
-        "metas": [to_meta(i) for i in shower_items],
-        "raw_items": shower_items,
-    }
-    print(f"  Solo Nude Shower & Wet Bath: {len(shower_items)} items")
-
-    # 2. Phat Booty & Twerk Flaunt (NO BubbleButt)
+    # 1. Phat Booty & Twerk Flaunt (NO BubbleButt) + Pimpbunny Special
     thick_items = []
+    
+    # Add HaleyQuinnLA Twerks In Her Bathroom at the very top of Thick Booty
+    haley_item = {
+        "id": "pb_haleyquinnla_bathroom_twerk",
+        "name": "HaleyQuinnLA Twerks In Her Bathroom",
+        "poster": "https://pimpbunny.com/contents/videos_screenshots/524000/524982/preview_720p.mp4.jpg",
+        "thumbnail": "https://pimpbunny.com/contents/videos_screenshots/524000/524982/preview_720p.mp4.jpg",
+        "stream_url": "https://savad213.github.io/vidi-4k/media/haleyquinnla_bathroom_twerk.mp4",
+        "quality": "720p HD",
+        "runtime": "0:33",
+        "tags": ["Twerking", "BigAss", "PhatBooty", "Bathroom", "Solo"]
+    }
+    thick_items.append(haley_item)
+    assigned_vidi.add(haley_item["id"])
+
     thick_tags = {"BigAss", "Twerking", "Ass", "ThickBooty", "BigButt", "Booty", "Thick"}
     for it in clean_vidi:
         if it["id"] in assigned_vidi:
@@ -135,7 +137,23 @@ def main():
         "metas": [to_meta(i) for i in thick_items],
         "raw_items": thick_items,
     }
-    print(f"  Phat Booty & Twerk Flaunt: {len(thick_items)} items")
+    print(f"  Phat Booty & Twerk Flaunt: {len(thick_items)} items (incl. HaleyQuinnLA)")
+
+    # 2. Solo Nude Shower & Wet Bath
+    shower_items = []
+    for it in clean_vidi:
+        if it["id"] in assigned_vidi:
+            continue
+        tags = set(it.get("tags", []))
+        if tags.intersection({"Shower", "Bath", "Soapy"}):
+            shower_items.append(it)
+            assigned_vidi.add(it["id"])
+    catalog_results["xfhq_shower_wet"] = {
+        "name": "Solo Nude Shower & Wet Bath (1080p+)",
+        "metas": [to_meta(i) for i in shower_items],
+        "raw_items": shower_items,
+    }
+    print(f"  Solo Nude Shower & Wet Bath: {len(shower_items)} items")
 
     # 3. Real Solo Striptease
     strip_items = []
@@ -183,7 +201,6 @@ def main():
     print("\n=== Step 3: Processing Mastiraja Solo & Pakistani Leaks ===")
     masti_pool = json.loads(MASTIRAJA_ALL.read_text(encoding="utf-8"))["items"]
     
-    # Filter Mastiraja for Pakistani and Desi Creators Solo
     paki_items = []
     desi_creator_items = []
     paki_pat = re.compile(r"(?i)\b(pakistan|pakistani|lahore|karachi|islamabad|minahil|alina|imsha|alisha)\b")
@@ -210,11 +227,17 @@ def main():
     print(f"  Pakistani Solo & Cam Leaks: {len(paki_items)} items")
     print(f"  Desi Creators & Nude Solo: {len(desi_creator_items)} items")
 
-    print("\n=== Step 4: Writing Static Stream & Meta JSONs for All Desi Items ===")
+    print("\n=== Step 4: Writing Static Stream & Meta JSONs for All Desi & PB Items ===")
     meta_dir = REPO_ROOT / "meta" / "movie"
     stream_dir = REPO_ROOT / "stream" / "movie"
     meta_dir.mkdir(parents=True, exist_ok=True)
     stream_dir.mkdir(parents=True, exist_ok=True)
+
+    # 4A: Haley Quinn meta & stream
+    m_file = meta_dir / f"{haley_item['id']}.json"
+    s_file = stream_dir / f"{haley_item['id']}.json"
+    m_file.write_text(json.dumps({"meta": to_meta(haley_item)}, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
+    s_file.write_text(json.dumps({"streams": [{"url": haley_item["stream_url"], "name": "Permanent 720p HD", "title": "HaleyQuinnLA Twerks In Her Bathroom [720p HD]", "behaviorHints": {"notWebReady": False}}]}, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
 
     all_desi_items = fsixx_pool + paki_items + desi_creator_items
     for it in all_desi_items:
@@ -261,7 +284,7 @@ def main():
         stream_obj = {"streams": [stream_entry]}
         s_file.write_text(json.dumps(stream_obj, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
 
-    print(f"  Wrote {len(all_desi_items)} meta & stream JSON files.")
+    print(f"  Wrote {len(all_desi_items) + 1} meta & stream JSON files.")
 
     print("\n=== Step 5: Refreshing Catalog Directories ===")
     cat_movie_dir = REPO_ROOT / "catalog" / "movie"
@@ -301,7 +324,7 @@ def main():
     total_all_videos = sum(len(catalog_results[c[0]]["metas"]) for c in ALL_CATALOG_ORDER)
     manifest = {
         "id": "com.savaa.stremio.solo",
-        "version": "4.261026.1600",
+        "version": "4.261026.1610",
         "name": "Natural Solo & Desi MMS Suite",
         "description": (
             f"Curated Stremio Master Suite: {total_all_videos} videos across 7 categories. "
@@ -310,7 +333,7 @@ def main():
         ),
         "resources": ["catalog", "meta", "stream"],
         "types": ["movie"],
-        "idPrefixes": ["xfhq", "fsixx_", "masti_"],
+        "idPrefixes": ["xfhq", "fsixx_", "masti_", "pb_"],
         "catalogs": catalogs_manifest,
         "behaviorHints": {"adult": True, "configurable": False},
     }
