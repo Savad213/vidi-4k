@@ -339,7 +339,7 @@ def main():
             f"Zero 403 playback errors."
         ),
         "resources": ["catalog", "meta", "stream"],
-        "types": ["movie", "Porn"],
+        "types": ["movie"],
         "idPrefixes": ["xfhq", "masti_", "pb_", "paki_"],
         "catalogs": catalogs_manifest,
         "behaviorHints": {"adult": True, "configurable": False},

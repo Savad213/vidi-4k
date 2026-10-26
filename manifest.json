@@ -1,6 +1,6 @@
 {
   "id": "com.savaa.stremio.solo",
-  "version": "4.261026.1745",
+  "version": "4.261026.1830",
   "name": "Natural Solo & Desi MMS Suite",
   "description": "Curated Stremio Master Suite: 1416 videos across 6 categories. 100% Direct-Playing 1080p+/4K Natural Solo & Mastiraja HD Leaks. Zero 403 playback errors.",
   "resources": [
@@ -9,8 +9,7 @@
     "stream"
   ],
   "types": [
-    "movie",
-    "Porn"
+    "movie"
   ],
   "idPrefixes": [
     "xfhq",
