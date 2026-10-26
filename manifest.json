@@ -1,1 +1,78 @@
-{"id":"com.lo.xfree.hq","version":"1.261026.1048","name":"xfree HQ (4K Tease, Booty & Shower)","description":"5859 vertical videos (600 pure 4K). Solo tease, twerk, shower, big booty & thick.","resources":["catalog","meta","stream"],"types":["movie"],"idPrefixes":["xfhq"],"catalogs":[{"type":"movie","id":"xfhq_of_4k","name":"4K OnlyFans & Creator Exclusives (2160p)","extra":[{"name":"skip","isRequired":false}]},{"type":"movie","id":"xfhq_of_striptease","name":"OnlyFans Solo Striptease and Undress","extra":[{"name":"skip","isRequired":false}]},{"type":"movie","id":"xfhq_of_shower","name":"OnlyFans Nude Shower and Wet Bath","extra":[{"name":"skip","isRequired":false}]},{"type":"movie","id":"xfhq_of_booty","name":"OnlyFans Spreading Booty & Twerk","extra":[{"name":"skip","isRequired":false}]},{"type":"movie","id":"xfhq_busty_curvy","name":"Busty & Voluptuous Curves (1080p+)","extra":[{"name":"skip","isRequired":false}]},{"type":"movie","id":"xfhq_desi_solo","name":"Solo Indian and Pakistani Tease (1080p+)","extra":[{"name":"skip","isRequired":false}]},{"type":"movie","id":"xfhq_mms_leaks","name":"High-Quality MMS & Viral Leaks (1080p+)","extra":[{"name":"skip","isRequired":false}]},{"type":"movie","id":"xfhq_4k_ultra_hd","name":"4K Ultra HD Mobile (All 2160p)","extra":[{"name":"skip","isRequired":false}]}],"behaviorHints":{"adult":true,"configurable":false}}
+{
+  "id": "com.lo.xfree.hq",
+  "version": "2.261026.1421",
+  "name": "xfree HQ – Curated Solo, Booty, Shower & Couple",
+  "description": "Savaa curated: 5212 vertical videos (1080p+ & 4K). Solo Tease · Thick Booty · Shower · Latina · Couple & Girl-Girl.",
+  "resources": [
+    "catalog",
+    "meta",
+    "stream"
+  ],
+  "types": [
+    "movie"
+  ],
+  "idPrefixes": [
+    "xfhq"
+  ],
+  "catalogs": [
+    {
+      "type": "movie",
+      "id": "xfhq_shower_wet",
+      "name": "Nude Shower & Wet Bath (1080p+)",
+      "extra": [
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "xfhq_latina_solo",
+      "name": "Latina Solo & Curves (1080p+)",
+      "extra": [
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "xfhq_thick_booty",
+      "name": "Thick Booty, Curvy & Twerk (1080p+)",
+      "extra": [
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "xfhq_couple_girlgirl",
+      "name": "Real Couple & Girl-Girl (1080p+)",
+      "extra": [
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "xfhq_solo_tease",
+      "name": "Solo Tease & Strip (1080p+)",
+      "extra": [
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    }
+  ],
+  "behaviorHints": {
+    "adult": true,
+    "configurable": false
+  }
+}
