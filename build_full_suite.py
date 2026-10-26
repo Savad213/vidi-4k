@@ -15,13 +15,14 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).parent
 VIDI_ALL = REPO_ROOT / "vidi_all.json"
 DESI_ALL = REPO_ROOT / "desi_all.json"
+MASTIRAJA_ALL = REPO_ROOT / "mastiraja_all.json"
 
 PAGE_SIZE = 100
 
 # ── 1. GLOBAL BLOCK LIST ──────────────────────────────────────────────────────
 BLOCK_PATTERNS = re.compile(r"""
     \btentacle\b | \bhorror\b | \bscreaming\b | prison\s*parade |
-    \bpiss\b | \burine\b | watersport | \bscat\b |
+    \bpiss\b | \burine\b | \bpee\b | watersport | \bscat\b |
     pgad | unusual\s*people | medical\s*award |
     \bzucchini\b | vegetable | \bveggie\b |
     wifebucket | 33\s*minutes | 36\s*minute |
@@ -169,6 +170,11 @@ def main():
 
     print("\n=== Step 2: Processing Desi MMS Videos ===")
     desi_pool = json.loads(DESI_ALL.read_text(encoding="utf-8"))["items"]
+    if MASTIRAJA_ALL.exists():
+        masti_pool = json.loads(MASTIRAJA_ALL.read_text(encoding="utf-8"))["items"]
+        print(f"  Loaded {len(masti_pool)} videos from Mastiraja")
+        desi_pool.extend(masti_pool)
+
     clean_desi = []
     desi_seen = set()
 
@@ -177,7 +183,7 @@ def main():
         tags = it.get("tags", [])
         txt = name + " " + " ".join(tags)
         
-        # Block Western stars & global filth
+        # Block Western stars & global filth (including pee / piss / horror)
         if WESTERN_STARS.search(name) or BLOCK_PATTERNS.search(txt):
             continue
         
@@ -186,7 +192,8 @@ def main():
                         'wife', 'cheating', 'aunt', 'aunty', 'pakistani', 'punjabi', 'bengali',
                         'marathi', 'kannada', 'telugu', 'college', 'mms', 'leaked', 'viral',
                         'chubby', 'saree', 'salwar', 'shikha', 'pooja', 'neha', 'priya',
-                        'anjali', 'sonia', 'newly-married', 'desitales', 'masa49', 'vid65']
+                        'anjali', 'sonia', 'newly-married', 'desitales', 'masa49', 'vid65',
+                        'mastiraja', 'amateur', 'baddie', 'metro', 'hostel', 'cuddle']
         if not any(k in txt.lower() for k in desi_context):
             continue
 
@@ -200,7 +207,7 @@ def main():
     desi_tease_items = []
     desi_mms_items = []
 
-    tease_indicators = re.compile(r"(?i)(strip|tease|cam|solo|seduction|chubby|lingerie|saree|flick|touch|undress|mirror|snap)")
+    tease_indicators = re.compile(r"(?i)(strip|tease|cam|solo|seduction|chubby|lingerie|saree|flick|touch|undress|mirror|snap|rub)")
 
     for it in clean_desi:
         txt = it["name"] + " " + " ".join(it.get("tags", []))
@@ -230,6 +237,7 @@ def main():
 
     for it in clean_desi:
         vid_id = it["id"]
+        source_name = "Mastiraja 3.1 Mbps" if "masti_" in vid_id else "Cloudflare CDN 1.8 Mbps"
         # meta file
         m_file = meta_dir / f"{vid_id}.json"
         meta_obj = {
@@ -240,7 +248,7 @@ def main():
                 "poster": it.get("poster") or it.get("thumbnail") or "",
                 "posterShape": "poster",
                 "background": it.get("poster") or it.get("thumbnail") or "",
-                "description": f"480p+ Direct Cloudflare CDN · Authentic Desi MMS · {', '.join(it.get('tags', [])[:5])}",
+                "description": f"Direct {source_name} · Authentic Desi MMS · {', '.join(it.get('tags', [])[:5])}",
                 "genres": it.get("tags", ["Indian", "Desi", "MMS"]),
                 "releaseInfo": "480p+",
                 "runtime": "MMS"
@@ -254,8 +262,8 @@ def main():
             "streams": [
                 {
                     "url": it["stream_url"],
-                    "name": "Desi MMS Direct CDN",
-                    "title": f"{it['name']} [480p+ Direct Cloudflare CDN]",
+                    "name": source_name,
+                    "title": f"{it['name']} [{source_name} High Bitrate]",
                     "behaviorHints": {"notWebReady": False}
                 }
             ]
@@ -304,7 +312,7 @@ def main():
         ),
         "resources": ["catalog", "meta", "stream"],
         "types": ["movie"],
-        "idPrefixes": ["xfhq", "desi_"],
+        "idPrefixes": ["xfhq", "desi_", "masti_"],
         "catalogs": catalogs_manifest,
         "behaviorHints": {"adult": True, "configurable": False},
     }
