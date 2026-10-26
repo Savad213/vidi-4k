@@ -244,27 +244,6 @@ def main():
     print(f"  Pakistani Solo & Cam Leaks (Direct HD): {len(paki_items)} items")
     print(f"  Desi Creators & Nude Solo (Direct HD): {len(desi_creator_items)} items")
 
-    # Custom Master Tiers: Alina Rai, Indian 4K Webseries, MissaX 4K
-    from build_custom_tiers import ALINA_RAI_ITEMS, INDIAN_WEBSERIES_ITEMS, MISSAX_4K_ITEMS
-    catalog_results["alina_rai_master"] = {
-        "name": "Alina Rai (4K & Uncut Solo/Scenes)",
-        "metas": [to_meta(i) for i in ALINA_RAI_ITEMS],
-        "raw_items": ALINA_RAI_ITEMS,
-    }
-    catalog_results["desi_4k_webseries"] = {
-        "name": "Indian 4K Adult Web Series (Uncut)",
-        "metas": [to_meta(i) for i in INDIAN_WEBSERIES_ITEMS],
-        "raw_items": INDIAN_WEBSERIES_ITEMS,
-    }
-    catalog_results["missax_4k_latest"] = {
-        "name": "MissaX 4K Cinematic Taboo (Latest Releases)",
-        "metas": [to_meta(i) for i in MISSAX_4K_ITEMS],
-        "raw_items": MISSAX_4K_ITEMS,
-    }
-    print(f"  Alina Rai Master: {len(ALINA_RAI_ITEMS)} items")
-    print(f"  Indian 4K Webseries: {len(INDIAN_WEBSERIES_ITEMS)} items")
-    print(f"  MissaX 4K Latest: {len(MISSAX_4K_ITEMS)} items")
-
     print("\n=== Step 3: Writing Static Stream & Meta JSONs ===")
     meta_dir = REPO_ROOT / "meta" / "movie"
     stream_dir = REPO_ROOT / "stream" / "movie"
@@ -277,10 +256,10 @@ def main():
     m_file.write_text(json.dumps({"meta": to_meta(haley_item)}, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
     s_file.write_text(json.dumps({"streams": [{"url": haley_item["stream_url"], "name": "Permanent 720p HD", "title": "HaleyQuinnLA Twerks In Her Bathroom [720p HD]", "behaviorHints": {"notWebReady": False}}]}, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
 
-    all_desi_items = paki_items + desi_creator_items + ALINA_RAI_ITEMS + INDIAN_WEBSERIES_ITEMS + MISSAX_4K_ITEMS
+    all_desi_items = paki_items + desi_creator_items
     for it in all_desi_items:
         vid_id = it["id"]
-        source_name = "Direct Play" if "alina_" in vid_id or "desiws_" in vid_id or "missax_" in vid_id else "Mastiraja 3.1 Mbps Direct"
+        source_name = "Mastiraja 3.1 Mbps Direct"
 
         # meta file
         m_file = meta_dir / f"{vid_id}.json"
@@ -292,10 +271,10 @@ def main():
                 "poster": it.get("poster") or it.get("thumbnail") or "",
                 "posterShape": "poster",
                 "background": it.get("poster") or it.get("thumbnail") or "",
-                "description": f"Direct {source_name} · {it.get('quality', '1080p+')} · {', '.join(it.get('tags', [])[:5])}",
-                "genres": it.get("tags", ["Indian", "Desi", "Solo"]),
-                "releaseInfo": it.get("quality", "1080p+"),
-                "runtime": it.get("runtime", "")
+                "description": f"Direct {source_name} · High Bitrate Desi MMS · {', '.join(it.get('tags', [])[:5])}",
+                "genres": it.get("tags", ["Indian", "Desi", "MMS", "Pakistani"]),
+                "releaseInfo": "720p HD",
+                "runtime": "MMS"
             }
         }
         m_file.write_text(json.dumps(meta_obj, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
@@ -305,7 +284,7 @@ def main():
         stream_entry = {
             "url": it["stream_url"],
             "name": source_name,
-            "title": f"{it['name']} [{it.get('quality', '1080p+')}]",
+            "title": f"{it['name']} [Direct 720p HD]",
             "behaviorHints": {
                 "notWebReady": False
             }
@@ -333,10 +312,6 @@ def main():
         # Desi Authentic Suite (Direct Open Streams Only - Zero 403 Errors)
         ("xfhq_desi_pakistan", "Pakistani Solo & Cam Leaks (Direct HD)"),
         ("xfhq_desi_creators", "Desi Creators & Nude Solo (Direct HD)"),
-        # Custom Master Tiers
-        ("alina_rai_master", "Alina Rai (4K & Uncut Solo/Scenes)"),
-        ("desi_4k_webseries", "Indian 4K Adult Web Series (Uncut)"),
-        ("missax_4k_latest", "MissaX 4K Cinematic Taboo (Latest Releases)"),
     ]
 
     catalogs_manifest = []
@@ -356,15 +331,16 @@ def main():
     total_all_videos = sum(len(catalog_results[c[0]]["metas"]) for c in ALL_CATALOG_ORDER)
     manifest = {
         "id": "com.savaa.stremio.solo",
-        "version": "4.261026.1730",
+        "version": "4.261026.1745",
         "name": "Natural Solo & Desi MMS Suite",
         "description": (
-            f"Curated Stremio Master Suite: {total_all_videos} videos across 9 categories. "
-            f"100% Direct-Playing 1080p+/4K Natural Solo, Desi & Pakistani HD Leaks, Alina Rai, Indian Webseries & MissaX 4K."
+            f"Curated Stremio Master Suite: {total_all_videos} videos across 6 categories. "
+            f"100% Direct-Playing 1080p+/4K Natural Solo & Mastiraja HD Leaks. "
+            f"Zero 403 playback errors."
         ),
         "resources": ["catalog", "meta", "stream"],
         "types": ["movie", "Porn"],
-        "idPrefixes": ["xfhq", "masti_", "pb_", "paki_", "alina_", "desiws_", "missax_"],
+        "idPrefixes": ["xfhq", "masti_", "pb_", "paki_"],
         "catalogs": catalogs_manifest,
         "behaviorHints": {"adult": True, "configurable": False},
     }

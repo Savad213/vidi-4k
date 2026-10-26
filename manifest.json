@@ -1,8 +1,8 @@
 {
   "id": "com.savaa.stremio.solo",
-  "version": "4.261026.1730",
+  "version": "4.261026.1745",
   "name": "Natural Solo & Desi MMS Suite",
-  "description": "Curated Stremio Master Suite: 1440 videos across 9 categories. 100% Direct-Playing 1080p+/4K Natural Solo, Desi & Pakistani HD Leaks, Alina Rai, Indian Webseries & MissaX 4K.",
+  "description": "Curated Stremio Master Suite: 1414 videos across 6 categories. 100% Direct-Playing 1080p+/4K Natural Solo & Mastiraja HD Leaks. Zero 403 playback errors.",
   "resources": [
     "catalog",
     "meta",
@@ -16,10 +16,7 @@
     "xfhq",
     "masti_",
     "pb_",
-    "paki_",
-    "alina_",
-    "desiws_",
-    "missax_"
+    "paki_"
   ],
   "catalogs": [
     {
@@ -81,39 +78,6 @@
       "type": "movie",
       "id": "xfhq_desi_creators",
       "name": "Desi Creators & Nude Solo (Direct HD)",
-      "extra": [
-        {
-          "name": "skip",
-          "isRequired": false
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "alina_rai_master",
-      "name": "Alina Rai (4K & Uncut Solo/Scenes)",
-      "extra": [
-        {
-          "name": "skip",
-          "isRequired": false
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "desi_4k_webseries",
-      "name": "Indian 4K Adult Web Series (Uncut)",
-      "extra": [
-        {
-          "name": "skip",
-          "isRequired": false
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "missax_4k_latest",
-      "name": "MissaX 4K Cinematic Taboo (Latest Releases)",
       "extra": [
         {
           "name": "skip",
