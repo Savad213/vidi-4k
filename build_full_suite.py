@@ -539,7 +539,7 @@ for cid in ALL_CATALOG_ORDER:
 print("\n=== Step 6: Updating manifest.json ===")
 manifest = {
     "id": "com.savaa.stremio.solo",
-    "version": "5.261027.0200",
+    "version": "5.261027.226",
     "name": "Natural Solo, Couples & Desi MMS Suite",
     "description": (
         f"Curated Stremio Master Suite: {total_active} videos across 8 categories. "
