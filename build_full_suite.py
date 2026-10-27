@@ -537,9 +537,13 @@ for cid in ALL_CATALOG_ORDER:
 
 # 8. UPDATE MANIFEST.JSON
 print("\n=== Step 6: Updating manifest.json ===")
+ver = "5.261027.226"
+if re.search(r"(^|\.)0\d", ver):
+    raise ValueError(f"CRITICAL: Invalid semver version '{ver}' with leading zero. Stremio rejects this!")
+
 manifest = {
     "id": "com.savaa.stremio.solo",
-    "version": "5.261027.226",
+    "version": ver,
     "name": "Natural Solo, Couples & Desi MMS Suite",
     "description": (
         f"Curated Stremio Master Suite: {total_active} videos across 8 categories. "

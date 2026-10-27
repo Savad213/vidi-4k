@@ -272,9 +272,12 @@ def build():
             "extra": extra,
         })
 
+    b_ver = "2.261026.1421"
+    if re.search(r"(^|\.)0\d", b_ver):
+        raise ValueError(f"CRITICAL: Invalid semver version '{b_ver}' with leading zero. Stremio rejects this!")
     manifest = {
         "id": "com.lo.xfree.hq",
-        "version": "2.261026.1421",
+        "version": b_ver,
         "name": "xfree HQ – Curated Solo, Booty, Shower & Couple",
         "description": (
             f"Savaa curated: {sum(len(r['metas']) for r in catalog_results.values())} "
