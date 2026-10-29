@@ -1,6 +1,6 @@
 {
   "id": "com.savaa.stremio.solo",
-  "version": "5.261029.1431",
+  "version": "5.261029.1434",
   "name": "⭐ Vidi 4K: Solo, Couples & Desi MMS Suite",
   "description": "Curated Stremio Master Suite: 5100+ videos. Dedicated ⭐ 4K Ultra HD Only (2160p Direct) + Natural Solo, Couples & Authentic Mastiraja & FSIBlog Desi MMS Leaks. Filtered and Verified.",
   "resources": [
@@ -75,6 +75,17 @@
           "name": "search",
           "isRequired": false
         },
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "xfhq_emmyelfie",
+      "name": "Emmyelfie Profile (4K & 1080p+)",
+      "extra": [
         {
           "name": "skip",
           "isRequired": false
