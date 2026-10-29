@@ -1,6 +1,6 @@
 {
   "id": "com.savaa.stremio.solo",
-  "version": "5.261027.226",
+  "version": "5.261027.227",
   "name": "Natural Solo, Couples & Desi MMS Suite",
   "description": "Curated Stremio Master Suite: 4546 videos across 8 categories. Direct 1080p+/4K Natural Solo & Couples + Authentic Mastiraja & FSIBlog Desi MMS Leaks. Filtered and Verified.",
   "resources": [
@@ -12,6 +12,7 @@
     "movie"
   ],
   "idPrefixes": [
+    "cinema_",
     "xfhq",
     "masti_",
     "pb_",
@@ -20,6 +21,21 @@
     "fsixx_"
   ],
   "catalogs": [
+    {
+      "type": "movie",
+      "id": "savaa_curated_cinema",
+      "name": "⭐ Curated Cinema: Sensual & Narrative Masterpieces (4K)",
+      "extra": [
+        {
+          "name": "search",
+          "isRequired": false
+        },
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
     {
       "type": "movie",
       "id": "xfhq_thick_booty",
