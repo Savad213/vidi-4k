@@ -1,6 +1,6 @@
 {
   "id": "com.savaa.stremio.solo",
-  "version": "5.261029.1245",
+  "version": "5.261029.1246",
   "name": "Natural Solo, Couples & Desi MMS Suite",
   "description": "Curated Stremio Master Suite: 5100+ videos. Dedicated ⭐ 4K Ultra HD Only (2160p Direct) + Natural Solo, Couples & Authentic Mastiraja & FSIBlog Desi MMS Leaks. Filtered and Verified.",
   "resources": [
@@ -25,6 +25,21 @@
       "type": "movie",
       "id": "xfhq_curated_favorites",
       "name": "⭐ Savaa's Personal Favorites (4K UHD)",
+      "extra": [
+        {
+          "name": "search",
+          "isRequired": false
+        },
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "xfhq_slow_burn_taboo",
+      "name": "🔥 Slow-Burn & Forbidden Romance (4K UHD)",
       "extra": [
         {
           "name": "search",
