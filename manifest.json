@@ -1,8 +1,8 @@
 {
   "id": "com.savaa.stremio.solo",
-  "version": "5.261029.1434",
-  "name": "⭐ Vidi 4K: Solo, Couples & Desi MMS Suite",
-  "description": "Curated Stremio Master Suite: 5100+ videos. Dedicated ⭐ 4K Ultra HD Only (2160p Direct) + Natural Solo, Couples & Authentic Mastiraja & FSIBlog Desi MMS Leaks. Filtered and Verified.",
+  "version": "6.261102.1115",
+  "name": "\u2b50 Vidi 4K: Solo, Couples & Desi MMS Suite",
+  "description": "Curated Stremio Master Suite: 5100+ videos. Dedicated \u2b50 4K Ultra HD Only (2160p Direct) + Natural Solo, Couples & Authentic Mastiraja & FSIBlog Desi MMS Leaks. Filtered and Verified.",
   "resources": [
     "catalog",
     "meta",
@@ -12,6 +12,8 @@
     "movie"
   ],
   "idPrefixes": [
+    "mxv_",
+    "pt100_",
     "cinema_",
     "xfhq",
     "masti_",
@@ -23,8 +25,38 @@
   "catalogs": [
     {
       "type": "movie",
+      "id": "xfhq_puretaboo_m3u_100",
+      "name": "\ud83d\udd25 PureTaboo Master Collection (100 Movies)",
+      "extra": [
+        {
+          "name": "search",
+          "isRequired": false
+        },
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "xfhq_missax_m3u_vault",
+      "name": "\ud83c\udfad MissaX Complete Collection (140 Movies)",
+      "extra": [
+        {
+          "name": "search",
+          "isRequired": false
+        },
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
       "id": "xfhq_curated_favorites",
-      "name": "⭐ Savaa's Personal Favorites (4K UHD)",
+      "name": "\u2b50 Savaa's Personal Favorites (4K UHD)",
       "extra": [
         {
           "name": "search",
@@ -39,7 +71,7 @@
     {
       "type": "movie",
       "id": "xfhq_slow_burn_taboo",
-      "name": "🔥 Slow-Burn & Forbidden Romance (4K UHD)",
+      "name": "\ud83d\udd25 Slow-Burn & Forbidden Romance (4K UHD)",
       "extra": [
         {
           "name": "search",
@@ -54,7 +86,7 @@
     {
       "type": "movie",
       "id": "xfhq_missax_4k",
-      "name": "🎭 MissaX 4K: Forbidden Stories & Drama",
+      "name": "\ud83c\udfad MissaX 4K: Forbidden Stories & Drama",
       "extra": [
         {
           "name": "search",
@@ -69,7 +101,7 @@
     {
       "type": "movie",
       "id": "xfhq_4k_uhd",
-      "name": "⭐ 4K Ultra HD Only (2160p Direct)",
+      "name": "\u2b50 4K Ultra HD Only (2160p Direct)",
       "extra": [
         {
           "name": "search",
