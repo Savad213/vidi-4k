@@ -1,6 +1,6 @@
 {
   "id": "com.savaa.stremio.solo",
-  "version": "6.261104.0115",
+  "version": "6.261104.0125",
   "name": "⭐ Vidi 4K: Solo, Couples & Desi MMS Suite",
   "description": "Curated Stremio Master Suite: 5100+ videos. 4K Ultra HD Only (2160p Direct) + Vertical Phone Vault (9:16 Strictly Separated) + PureTaboo, MissaX, Couples & Desi MMS Leaks.",
   "resources": [
@@ -55,21 +55,6 @@
     },
     {
       "type": "movie",
-      "id": "xfhq_missax_4k",
-      "name": "🎭 MissaX 4K: Forbidden Stories & Drama",
-      "extra": [
-        {
-          "name": "search",
-          "isRequired": false
-        },
-        {
-          "name": "skip",
-          "isRequired": false
-        }
-      ]
-    },
-    {
-      "type": "movie",
       "id": "xfhq_puretaboo_m3u_100",
       "name": "🔥 PureTaboo Master Collection (100 Movies)",
       "extra": [
@@ -86,7 +71,7 @@
     {
       "type": "movie",
       "id": "xfhq_missax_m3u_vault",
-      "name": "🎭 MissaX Complete Collection (140 Movies)",
+      "name": "🎭 MissaX Master 4K & UHD Collection (140 Movies)",
       "extra": [
         {
           "name": "search",
