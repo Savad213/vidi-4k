@@ -119,3 +119,8 @@ manifest["description"] = "Curated Stremio Master Suite: 5100+ videos. Dedicated
 
 manifest_file.write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
 print(f"Manifest updated to version {manifest['version']} with {len(manifest['catalogs'])} catalogs.")
+
+# Enforce one listing per source after any direct catalog rebuild.
+if __name__ == "__main__":
+    from deduplicate_catalogs import deduplicate
+    deduplicate(Path(__file__).resolve().parent)

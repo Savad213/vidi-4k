@@ -303,3 +303,8 @@ def build():
 
 if __name__ == "__main__":
     build()
+
+# Enforce one listing per source after any direct catalog rebuild.
+if __name__ == "__main__":
+    from deduplicate_catalogs import deduplicate
+    deduplicate(Path(__file__).resolve().parent)

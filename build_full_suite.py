@@ -598,3 +598,8 @@ for cid in ALL_CATALOG_ORDER[5:]:
 (REPO_ROOT / "playlist_desi.m3u").write_text("\n".join(m3u_desi), encoding="utf-8")
 
 print("\n✅ BUILD COMPLETE! All 8 catalogs ranked & paginated, search enabled, manifest v5.261027.0200 written.")
+
+# Enforce one listing per source after any direct catalog rebuild.
+if __name__ == "__main__":
+    from deduplicate_catalogs import deduplicate
+    deduplicate(Path(__file__).resolve().parent)

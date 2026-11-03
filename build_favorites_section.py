@@ -202,3 +202,8 @@ with open(manifest_file, "w", encoding="utf-8") as mf:
     json.dump(manifest, mf, indent=2, ensure_ascii=False)
 
 print(f"Manifest updated to version {manifest['version']} with ⭐ Savaa's Personal Favorites at position 0!", flush=True)
+
+# Enforce one listing per source after any direct catalog rebuild.
+if __name__ == "__main__":
+    from deduplicate_catalogs import deduplicate
+    deduplicate(Path(__file__).resolve().parent)

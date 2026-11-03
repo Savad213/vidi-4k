@@ -26,6 +26,9 @@ jobs:
         run: |
           python refresh_weekly.py
 
+      - name: Deduplicate final catalog output
+        run: python deduplicate_catalogs.py
+
       - name: Commit and Push Changes If Updated
         run: |
           git config --global user.name "github-actions[bot]"
