@@ -1,0 +1,12 @@
+{
+  "streams": [
+    {
+      "name": "⭐ 4K UHD [Direct]",
+      "title": "[4K] Spreading Wide For The Camera (4K UHD)\n[Direct 4K Master Stream]",
+      "url": "https://cdn.xfree.com/xfree-prod/0/6/1/061b90f9-b72c-4db0-924f-a82748909cf6/full.mp4",
+      "behaviorHints": {
+        "notWebReady": false
+      }
+    }
+  ]
+}

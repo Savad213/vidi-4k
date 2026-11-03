@@ -1,6 +1,6 @@
 {
   "id": "com.savaa.stremio.solo",
-  "version": "6.261104.0125",
+  "version": "6.261104.0135",
   "name": "⭐ Vidi 4K: Solo, Couples & Desi MMS Suite",
   "description": "Curated Stremio Master Suite: 5100+ videos. 4K Ultra HD Only (2160p Direct) + Vertical Phone Vault (9:16 Strictly Separated) + PureTaboo, MissaX, Couples & Desi MMS Leaks.",
   "resources": [
@@ -12,15 +12,16 @@
     "movie"
   ],
   "idPrefixes": [
-    "mxv_",
-    "pt100_",
     "cinema_",
-    "xfhq",
-    "masti_",
-    "pb_",
-    "paki_",
     "desi_",
-    "fsixx_"
+    "fsixx_",
+    "masti_",
+    "mxv_",
+    "paki_",
+    "pb_",
+    "pt100_",
+    "sv_",
+    "xfhq"
   ],
   "catalogs": [
     {
@@ -56,7 +57,7 @@
     {
       "type": "movie",
       "id": "xfhq_puretaboo_m3u_100",
-      "name": "🔥 PureTaboo Master Collection (100 Movies)",
+      "name": "🔥 PureTaboo Master Collection (100% Clean UHD)",
       "extra": [
         {
           "name": "search",
@@ -71,7 +72,82 @@
     {
       "type": "movie",
       "id": "xfhq_missax_m3u_vault",
-      "name": "🎭 MissaX Master 4K & UHD Collection (140 Movies)",
+      "name": "🎭 MissaX Master Collection (100% Clean UHD)",
+      "extra": [
+        {
+          "name": "search",
+          "isRequired": false
+        },
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "xfhq_voluptuous_stars",
+      "name": "👑 Voluptuous Stars 4K (Hourglass & Curves)",
+      "extra": [
+        {
+          "name": "search",
+          "isRequired": false
+        },
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "xfhq_tactile_massage",
+      "name": "💆 Tactile Touch & Nuru Massage (4K UHD)",
+      "extra": [
+        {
+          "name": "search",
+          "isRequired": false
+        },
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "xfhq_european_sensual",
+      "name": "🌹 European Sensual Romance (4K UHD)",
+      "extra": [
+        {
+          "name": "search",
+          "isRequired": false
+        },
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "xfhq_luxury_domestic",
+      "name": "🎬 Luxury Domestic Narrative (4K Master Vault)",
+      "extra": [
+        {
+          "name": "search",
+          "isRequired": false
+        },
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "xfhq_roleplay",
+      "name": "🎭 Scripted Domestic Roleplay (4K UHD)",
       "extra": [
         {
           "name": "search",
@@ -167,17 +243,6 @@
           "name": "search",
           "isRequired": false
         },
-        {
-          "name": "skip",
-          "isRequired": false
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "xfhq_emmyelfie",
-      "name": "👱‍♀️ Eva Elfie Profile (4K & 1080p+)",
-      "extra": [
         {
           "name": "skip",
           "isRequired": false
