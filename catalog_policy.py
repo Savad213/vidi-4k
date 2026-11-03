@@ -38,9 +38,12 @@ def apply_policy(root, manifest, original, find, load):
         catalog = next((c for c in manifest["catalogs"] if c["id"] == cid), None)
         if catalog is None:
             catalog = {"type": "movie", "id": cid, "name": cid,
-                       "extra": [{"name": "skip"}, {"name": "search"}]}
+                       "extra": [{"name": "skip"}]}
             manifest["catalogs"].append(catalog)
             original[cid] = []
+        if cid == "xfhq_archive_references":
+            # This static collection has no generated search responses.
+            catalog["extra"] = [{"name": "skip"}]
         known = {str(item["id"]) for item in original[cid]}
         for ident in ids:
             path = root / "meta" / catalog["type"] / f"{ident}.json"
