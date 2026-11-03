@@ -5,6 +5,7 @@ import json
 import re
 from collections import defaultdict
 from pathlib import Path
+from catalog_policy import apply_policy
 
 PAGE_SIZE = 100
 
@@ -73,8 +74,10 @@ def deduplicate(root):
     manifest = load(manifest_path)
     find = source_groups(root)
     original = {c["id"]: catalog_items(root, c) for c in manifest["catalogs"]}
+    blocked = apply_policy(root, manifest, original, find, load)
     # Prefer dedicated collections; broad collections receive only unassigned items.
-    broad = {"xfhq_4k_uhd": 1, "xfhq_luxury_domestic": 2}
+    broad = {"xfhq_phone_selfie": -1, "xfhq_archive_references": -1,
+             "xfhq_4k_uhd": 1, "xfhq_luxury_domestic": 2}
     priority = sorted(manifest["catalogs"], key=lambda c: broad.get(c["id"], 0))
     selected = defaultdict(list)
     assigned = set()
@@ -111,15 +114,18 @@ def deduplicate(root):
             save(path, {"metas": matches[:PAGE_SIZE]})
 
     manifest["catalogs"] = [c for c in manifest["catalogs"] if selected[c["id"]]]
-    manifest["description"] = "Curated video collections. Each configured video source appears in one browsing category."
+    manifest["description"] = ("Existing video collections with one browse listing per source. "
+        "Resolution and orientation are source-reported, not measured. "
+        "Archive references and static links may require a separate player or refreshed access; playback is unverified.")
     parts = manifest["version"].split(".")
-    if tuple(map(int, parts)) < (6, 261104, 201):
-        manifest["version"] = "6.261104.0201"
+    if tuple(map(int, parts)) < (6, 261104, 301):
+        manifest["version"] = "6.261104.0301"
     save(manifest_path, manifest)
     result = {"catalogs": len(manifest["catalogs"]),
               "before_listings": sum(map(len, original.values())),
               "after_listings": sum(map(len, selected.values())),
               "unique_sources_preserved": len(before),
+              "excluded_source_groups": len(blocked),
               "duplicate_listings_removed": sum(map(len, original.values())) - len(before)}
     print(json.dumps(result))
     return result
