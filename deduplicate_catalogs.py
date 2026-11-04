@@ -135,12 +135,7 @@ def deduplicate(root):
     manifest["description"] = ("Existing video collections with one browse listing per source. "
         "Resolution and orientation are source-reported, not measured. "
         "Archive references and static links may require a separate player or refreshed access; playback is unverified.")
-    parts = manifest["version"].split(".")
-    clean_parts = [str(int(p)) if p.isdigit() else p for p in parts]
-    if tuple(map(int, clean_parts)) < (6, 261104, 501):
-        manifest["version"] = "6.261104.501"
-    else:
-        manifest["version"] = ".".join(clean_parts)
+    manifest["version"] = make_timestamp_version(major=6)
     if re.search(r"(^|\.)0\d", manifest["version"]):
         raise ValueError(f"CRITICAL: Invalid semver version '{manifest['version']}' with leading zero. Stremio rejects this!")
     assert all(p.isdigit() and (p == "0" or not p.startswith("0")) for p in manifest["version"].split(".")), f"Invalid semver version: {manifest['version']}"
