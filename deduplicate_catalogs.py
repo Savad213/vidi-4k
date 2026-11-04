@@ -52,7 +52,10 @@ def source_groups(root):
 
 def catalog_items(root, catalog):
     base = root / "catalog" / catalog["type"] / catalog["id"]
-    items = load(base.with_suffix(".json")).get("metas", [])
+    json_path = base.with_suffix(".json")
+    if not json_path.exists():
+        return []
+    items = load(json_path).get("metas", [])
     pages = sorted(base.glob("skip=*.json"), key=lambda p: int(p.stem.split("=")[1]))
     for page in pages:
         if int(page.stem.split("=")[1]) > 0:
@@ -76,7 +79,8 @@ def deduplicate(root):
     original = {c["id"]: catalog_items(root, c) for c in manifest["catalogs"]}
     blocked = apply_policy(root, manifest, original, find, load)
     # Prefer dedicated collections; broad collections receive only unassigned items.
-    broad = {"xfhq_phone_selfie": -1, "xfhq_archive_references": -1,
+    broad = {"xfhq_curated_favorites": -3, "xfhq_phone_selfie": -2,
+             "xfhq_unverified_dimensions": -1, "xfhq_archive_references": -1,
              "xfhq_4k_uhd": 1, "xfhq_luxury_domestic": 2}
     priority = sorted(manifest["catalogs"], key=lambda c: broad.get(c["id"], 0))
     selected = defaultdict(list)
@@ -118,8 +122,8 @@ def deduplicate(root):
         "Resolution and orientation are source-reported, not measured. "
         "Archive references and static links may require a separate player or refreshed access; playback is unverified.")
     parts = manifest["version"].split(".")
-    if tuple(map(int, parts)) < (6, 261104, 301):
-        manifest["version"] = "6.261104.0301"
+    if tuple(map(int, parts)) < (6, 261104, 401):
+        manifest["version"] = "6.261104.0401"
     save(manifest_path, manifest)
     result = {"catalogs": len(manifest["catalogs"]),
               "before_listings": sum(map(len, original.values())),
