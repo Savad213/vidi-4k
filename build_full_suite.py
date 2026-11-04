@@ -540,6 +540,7 @@ print("\n=== Step 6: Updating manifest.json ===")
 ver = "5.261027.226"
 if re.search(r"(^|\.)0\d", ver):
     raise ValueError(f"CRITICAL: Invalid semver version '{ver}' with leading zero. Stremio rejects this!")
+assert all(p.isdigit() and (p == "0" or not p.startswith("0")) for p in ver.split(".")), f"Invalid semver version: {ver}"
 
 manifest = {
     "id": "com.savaa.stremio.solo",

@@ -21,6 +21,20 @@ def save(path, value):
         path.write_text(text, encoding="utf-8")
 
 
+def make_timestamp_version(major=6, dt=None):
+    """Build a semver version with %y%m%d and %H%M patch, stripping leading zeros."""
+    import datetime
+    if dt is None:
+        dt = datetime.datetime.now()
+    date_part = dt.strftime("%y%m%d")
+    patch_part = str(int(dt.strftime("%H%M")))  # strip leading zero: e.g. "0401" -> "401"
+    ver = f"{major}.{date_part}.{patch_part}"
+    if re.search(r"(^|\.)0\d", ver):
+        raise ValueError(f"CRITICAL: Invalid semver version '{ver}' with leading zero. Stremio rejects this!")
+    assert all(p.isdigit() and (p == "0" or not p.startswith("0")) for p in ver.split(".")), f"Invalid semver version: {ver}"
+    return ver
+
+
 def source_groups(root):
     parent = {}
     first = {}
@@ -122,8 +136,14 @@ def deduplicate(root):
         "Resolution and orientation are source-reported, not measured. "
         "Archive references and static links may require a separate player or refreshed access; playback is unverified.")
     parts = manifest["version"].split(".")
-    if tuple(map(int, parts)) < (6, 261104, 401):
-        manifest["version"] = "6.261104.0401"
+    clean_parts = [str(int(p)) if p.isdigit() else p for p in parts]
+    if tuple(map(int, clean_parts)) < (6, 261104, 501):
+        manifest["version"] = "6.261104.501"
+    else:
+        manifest["version"] = ".".join(clean_parts)
+    if re.search(r"(^|\.)0\d", manifest["version"]):
+        raise ValueError(f"CRITICAL: Invalid semver version '{manifest['version']}' with leading zero. Stremio rejects this!")
+    assert all(p.isdigit() and (p == "0" or not p.startswith("0")) for p in manifest["version"].split(".")), f"Invalid semver version: {manifest['version']}"
     save(manifest_path, manifest)
     result = {"catalogs": len(manifest["catalogs"]),
               "before_listings": sum(map(len, original.values())),

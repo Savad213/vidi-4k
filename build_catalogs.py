@@ -275,6 +275,7 @@ def build():
     b_ver = "2.261026.1421"
     if re.search(r"(^|\.)0\d", b_ver):
         raise ValueError(f"CRITICAL: Invalid semver version '{b_ver}' with leading zero. Stremio rejects this!")
+    assert all(p.isdigit() and (p == "0" or not p.startswith("0")) for p in b_ver.split(".")), f"Invalid semver version: {b_ver}"
     manifest = {
         "id": "com.lo.xfree.hq",
         "version": b_ver,

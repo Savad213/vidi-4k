@@ -3,7 +3,7 @@ import re
 import hashlib
 from pathlib import Path
 
-REPO_ROOT = Path(r"C:\Users\SM.DESKTOP-P1R0508.000\Projects\vidi-4k")
+REPO_ROOT = Path(__file__).resolve().parent
 
 # Load verified new MissaX 4K items
 with open(r"C:\Users\SM.DESKTOP-P1R0508.000\.gemini\antigravity-cli\brain\2a859197-7e46-4613-bfc6-5fad31b252d3\scratch\verified_missax_4k.json", "r", encoding="utf-8") as f:
@@ -129,8 +129,12 @@ manifest["catalogs"].insert(2, missax_cat_entry)
 
 # Bump manifest version
 v_parts = manifest.get("version", "5.261029.1246").split(".")
+v_parts = [str(int(p)) if p.isdigit() else p for p in v_parts]
 v_parts[-1] = str(int(v_parts[-1]) + 1)
 manifest["version"] = ".".join(v_parts)
+if re.search(r"(^|\.)0\d", manifest["version"]):
+    raise ValueError(f"CRITICAL: Invalid semver version '{manifest['version']}' with leading zero. Stremio rejects this!")
+assert all(p.isdigit() and (p == "0" or not p.startswith("0")) for p in manifest["version"].split(".")), f"Invalid semver version: {manifest['version']}"
 
 with open(manifest_file, "w", encoding="utf-8") as mf:
     json.dump(manifest, mf, indent=2, ensure_ascii=False)

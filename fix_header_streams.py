@@ -114,6 +114,7 @@ def main():
     new_ver = sys.argv[1] if len(sys.argv) > 1 else manifest["version"]
     if re.search(r"(^|\.)0\d", new_ver):
         raise ValueError(f"CRITICAL: Invalid semver version '{new_ver}' with leading zero. Stremio rejects this!")
+    assert all(p.isdigit() and (p == "0" or not p.startswith("0")) for p in new_ver.split(".")), f"Invalid semver version: {new_ver}"
     manifest["version"] = new_ver
     (P / "manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
     (P / "header_fix_report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")

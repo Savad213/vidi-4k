@@ -2,7 +2,7 @@ import json
 import re
 from pathlib import Path
 
-REPO_ROOT = Path(r"C:\Users\SM.DESKTOP-P1R0508.000\Projects\vidi-4k")
+REPO_ROOT = Path(__file__).resolve().parent
 PAGE_SIZE = 100
 
 BLOCK_PATTERNS = re.compile(r"""
@@ -114,7 +114,13 @@ else:
     existing_cats.insert(0, cat_entry)
 
 manifest["catalogs"] = existing_cats
-manifest["version"] = "5.261029.1245"
+v_parts = manifest.get("version", "5.261029.1245").split(".")
+v_parts = [str(int(p)) if p.isdigit() else p for p in v_parts]
+v_parts[-1] = str(int(v_parts[-1]) + 1)
+manifest["version"] = ".".join(v_parts)
+if re.search(r"(^|\.)0\d", manifest["version"]):
+    raise ValueError(f"CRITICAL: Invalid semver version '{manifest['version']}' with leading zero. Stremio rejects this!")
+assert all(p.isdigit() and (p == "0" or not p.startswith("0")) for p in manifest["version"].split(".")), f"Invalid semver version: {manifest['version']}"
 manifest["description"] = "Curated Stremio Master Suite: 5100+ videos. Dedicated ⭐ 4K Ultra HD Only (2160p Direct) + Natural Solo, Couples & Authentic Mastiraja & FSIBlog Desi MMS Leaks. Filtered and Verified."
 
 manifest_file.write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")

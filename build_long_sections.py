@@ -154,8 +154,12 @@ def main():
             "extra": [{"name": "skip", "isRequired": False}],
         })
     parts = manifest["version"].split(".")
+    parts = [str(int(p)) if p.isdigit() else p for p in parts]
     parts[-1] = str(int(parts[-1]) + 1)
     manifest["version"] = ".".join(parts)
+    if re.search(r"(^|\.)0\d", manifest["version"]):
+        raise ValueError(f"CRITICAL: Invalid semver version '{manifest['version']}' with leading zero. Stremio rejects this!")
+    assert all(p.isdigit() and (p == "0" or not p.startswith("0")) for p in manifest["version"].split(".")), f"Invalid semver version: {manifest['version']}"
     manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"version": manifest["version"], "counts": counts,
                       "failed_probes": {CATALOGS[0][0]: dict(solo_failures), CATALOGS[1][0]: dict(couples_failures)}}, indent=2))
