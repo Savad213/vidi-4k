@@ -40,10 +40,15 @@ EXCLUDE = re.compile(r'(?i)(anal|threesome|3some|gangbang|orgy|foursome|tag-team
 
 # Targeted search queries for user's confirmed favorite actresses & studios
 TARGET_FEEDS = [
-    ('Kendra Sunderland', 'xxx_studio_kendra_sunderland', 'Kendra Sunderland', 'Vixen'),
+    ('Octavia Red', 'xxx_studio_octavia_red', 'Octavia Red', 'MissaX'),
     ('Lena Paul', 'xxx_studio_lena_paul', 'Lena Paul', 'Deeper'),
     ('Angela White', 'xxx_studio_angela_white', 'Angela White', 'Family Therapy'),
-    ('Elizabeth Skylar', 'xxx_studio_elizabeth_skylar', 'Elizabeth Skylar', 'MissaX'),
+    ('Eva Elfie', 'xxx_studio_eva_elfie', 'Eva Elfie', 'MetArt'),
+    ('Little Caprice', 'xxx_studio_little_caprice', 'Little Caprice', 'Tushy'),
+    ('SexArt Romance', 'xxx_studio_sexart', 'SexArt Sensual', 'SexArt'),
+    ('Vixen 4K', 'xxx_studio_vixen', 'Vixen Passion', 'Vixen'),
+    ('NF Busty Natural', 'xxx_studio_nfbusty', 'NF Busty', 'NF Busty'),
+    ('Kendra Sunderland', 'xxx_studio_kendra_sunderland', 'Kendra Sunderland', 'Vixen'),
     ('Ellie Nova', 'xxx_studio_ellie_nova', 'Ellie Nova', 'Adult Time'),
     ('MissaX Story', 'xxx_studio_missax', 'MissaX', 'MissaX'),
     ('Deeper Story', 'xxx_studio_deeper', 'Deeper', 'Deeper'),
