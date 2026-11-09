@@ -119,8 +119,11 @@ def deduplicate(root):
         offsets.update(range(PAGE_SIZE, len(items) + PAGE_SIZE, PAGE_SIZE))
         for skip in sorted(offsets):
             save(base / f"skip={skip}.json", {"metas": items[skip:skip + PAGE_SIZE]})
-        # Retain existing search vocabulary, restricting each result to its owner.
-        allowed = {find((m.get("type", catalog["type"]), str(m["id"]))): m for m in items}
+        # Retain existing search vocabulary. Global search uses all items, category search uses its owner.
+        if catalog["id"] == "xfhq_search":
+            allowed = {find((m.get("type", "movie"), str(m["id"]))): m for cat_items in selected.values() for m in cat_items}
+        else:
+            allowed = {find((m.get("type", catalog["type"]), str(m["id"]))): m for m in items}
         for path in sorted(base.glob("search=*.json")):
             matches = []
             seen = set()
