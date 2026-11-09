@@ -280,6 +280,35 @@ def rebuild():
     # C. LOAD SOURCE DATASETS
     print("\n--- Loading pool sources for expansion ---")
     tease = json.loads((REPO_ROOT / "vidi_tease.json").read_text(encoding="utf-8"))["items"]
+    vidi_all_raw = json.loads((REPO_ROOT / "vidi_all.json").read_text(encoding="utf-8"))["items"]
+
+    emmy_items = []
+    emmy_path = REPO_ROOT / "emmyelfie_xfree_1080plus.json"
+    if emmy_path.exists():
+        emmy_raw = json.loads(emmy_path.read_text(encoding="utf-8"))
+        for it in emmy_raw:
+            if it.get("h", 0) >= it.get("w", 0) and it.get("video") and it.get("poster"):
+                tags = [t.strip("#") for t in it.get("tags", "").split()]
+                slug = it.get("slug", "").replace("-", " ").title()
+                emmy_items.append({
+                    "id": f"xfhq_emmy_{it['id']}",
+                    "name": f"Emmy Elfie: {slug}",
+                    "title": f"Emmy Elfie: {slug} [1080p Vertical]",
+                    "tags": tags + ["Solo", "Emmy Elfie", "Vertical", "Tease"],
+                    "poster": it.get("poster"),
+                    "thumbnail": it.get("poster"),
+                    "logo": it.get("poster"),
+                    "stream_url": it.get("video"),
+                    "url": it.get("video"),
+                    "orientation": "vertical",
+                    "quality": "1080p+",
+                    "resolution": f"{it.get('w', 1080)}x{it.get('h', 1920)}",
+                    "duration": it.get("duration", 30),
+                    "runtime": f"0:{it.get('duration', 30):02d}",
+                    "likes": 250
+                })
+
+    all_tease_pool = tease + vidi_all_raw + emmy_items
     paki = json.loads((REPO_ROOT / "pakistani_all.json").read_text(encoding="utf-8"))["items"]
     desi = json.loads((REPO_ROOT / "desi_all.json").read_text(encoding="utf-8"))["items"]
     masti = json.loads((REPO_ROOT / "mastiraja_all.json").read_text(encoding="utf-8"))["items"]
@@ -301,7 +330,7 @@ def rebuild():
 
     added_counts = Counter()
 
-    for it in tease:
+    for it in all_tease_pool:
         if it["id"] in assigned_ids:
             continue
         ok, _ = check_solo(it)
