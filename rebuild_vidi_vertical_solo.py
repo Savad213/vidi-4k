@@ -1,12 +1,13 @@
 """
-Vidi 4K Dedicated Rebuilder: 100% Vertical Solo, OnlyFans, Tease, Shower, Desi MMS & Pakistani.
+Vidi 4K Dedicated Rebuilder: 100% Vertical Solo, OnlyFans, Tease, Shower, Desi Phone MMS & Pakistani Leaks.
 Completely eliminates all Western studio films, cinema, roleplay, and couples from Vidi 4K.
-Expands target catalogs with thousands of strictly filtered, verified high-resolution videos.
+Exclusively indexes authentic leaked phone videos, WhatsApp/Snapchat video calls, hotel recordings, and creator-free real MMS.
 """
 
 import json
 import os
 import re
+import html
 import shutil
 import datetime
 from pathlib import Path
@@ -44,19 +45,13 @@ TARGET_CATALOGS = [
     {
         "type": "movie",
         "id": "xfhq_desi_mms",
-        "name": "Desi MMS Leaks",
+        "name": "Desi Phone MMS Leaks",
         "extra": [{"name": "skip", "isRequired": False}]
     },
     {
         "type": "movie",
         "id": "xfhq_desi_pakistan",
-        "name": "Pakistani Solo & Cam Leaks",
-        "extra": [{"name": "skip", "isRequired": False}]
-    },
-    {
-        "type": "movie",
-        "id": "xfhq_desi_creators",
-        "name": "Desi Creators & Nude Solo",
+        "name": "Pakistani Phone & Video Call Leaks",
         "extra": [{"name": "skip", "isRequired": False}]
     },
     {
@@ -123,6 +118,42 @@ WESTERN_PORNSTAR_PAT = re.compile(r"""(?i)\b(
     gabbie\s*carter|leah\s*gotti|abigaiil\s*morris|sweetie\s*fox|lena\s*the\s*plug
 )\b""", re.VERBOSE)
 
+# Strict ban on creators, models, webseries, and studios in MMS / Pakistani leak rows
+CREATOR_OR_STUDIO_BAN = re.compile(
+    r"""(?i)\b(
+        onlyfans|fansly|creator|creators|patreon|influencer|webcam|camgirl|model|models|
+        webseries|ullu|kooku|cineprime|primeshots|rabbit|hotshots|besharams|voovi|hunters|moodx|fliz|
+        episode|uncut\s*webseries|web\s*series|photoshoot|photo\s*shoot|casting|interview|
+        backstage|behind\s*the\s*scenes|bts|official|trailer|movie|film|salomelons|ari\s*kytsya|
+        kiarablay|nandana|nandana\s*krishnan|anamika\s*desai|subway\s*girl
+    )\b""", re.VERBOSE
+)
+
+# Positive scoring for authentic leaked phone recordings
+PHONE_LEAK_KEYWORDS = [
+    (r"(?i)\b(video\s*call|videocall|call\s*leak|call\s*recording)\b", 60),
+    (r"(?i)\b(phone\s*cam|phonecam|phone\s*leak|phone\s*recording|recorded\s*on\s*phone|cell\s*phone)\b", 50),
+    (r"(?i)\b(mms\s*leak|leaked\s*mms|desi\s*mms|viral\s*mms|pakistani\s*mms)\b", 40),
+    (r"(?i)\b(whatsapp|snapchat|snap|telegram|leaked\s*tape)\b", 35),
+    (r"(?i)\b(hotel\s*room|hotel|hostel|oyo|guest\s*house)\b", 30),
+    (r"(?i)\b(hidden\s*cam|spy\s*cam|hidden\s*camera|spycam|secret\s*camera|caught\s*on\s*cam)\b", 30),
+    (r"(?i)\b(private\s*leak|secret\s*recording|personal\s*video|private\s*video|private\s*room)\b", 25),
+    (r"(?i)\b(girlfriend|gf|bhabhi|wife|biwi|lover|devar|college\s*girl|school\s*girl)\b", 20),
+    (r"(?i)\b(mirror\s*selfie|selfie\s*video|bedroom\s*recording|bathroom\s*leak)\b", 20),
+]
+
+def score_phone_leak(item):
+    name = item.get("name", "")
+    tags = " ".join(item.get("tags", []))
+    txt = f"{name} {tags}"
+    if CREATOR_OR_STUDIO_BAN.search(txt) or WESTERN_PORNSTAR_PAT.search(txt):
+        return -1000
+    score = 0
+    for pat, pts in PHONE_LEAK_KEYWORDS:
+        if re.search(pat, txt):
+            score += pts
+    return score
+
 def check_universal(item):
     name = item.get('name', '')
     desc = item.get('description', '')
@@ -151,7 +182,13 @@ def check_solo(item):
     return True, "OK"
 
 def to_meta(item):
-    name = item.get("name", "")
+    raw_name = html.unescape(item.get("name", "")).strip()
+    # Strip site branding and artifact tags from titles
+    clean_name = re.sub(r"\s*[-–|]\s*Masti\s*Raja\s*$", "", raw_name, flags=re.IGNORECASE)
+    clean_name = re.sub(r"\s*\[High Bitrate Desi MMS\]\s*$", "", clean_name, flags=re.IGNORECASE)
+    clean_name = re.sub(r"\s*\[480p\+\s*Desi MMS\]\s*$", "", clean_name, flags=re.IGNORECASE)
+    clean_name = clean_name.strip()
+    
     poster = item.get("poster") or item.get("thumbnail") or ""
     tags = item.get("tags") or item.get("genres") or []
     qual = item.get("quality", "1080p+")
@@ -159,7 +196,7 @@ def to_meta(item):
     return {
         "id": item["id"],
         "type": "movie",
-        "name": name,
+        "name": clean_name,
         "poster": poster,
         "background": poster,
         "logo": item.get("logo") or poster,
@@ -262,12 +299,17 @@ def rebuild():
             for p in sorted(cat_dir.glob("skip=*.json"), key=lambda x: int(x.stem.split("=")[1])):
                 cat_items.extend(json.loads(p.read_text(encoding="utf-8")).get("metas", []))
 
-        is_solo_cat = cid in ["xfhq_thick_booty", "xfhq_shower_wet", "xfhq_solo_strip", "xfhq_phone_selfie", "xfhq_desi_creators"]
+        is_solo_cat = cid in ["xfhq_thick_booty", "xfhq_shower_wet", "xfhq_solo_strip", "xfhq_phone_selfie"]
+        is_mms_cat = cid in ["xfhq_desi_mms", "xfhq_desi_pakistan"]
         for it in cat_items:
             if it["id"] in assigned_ids:
                 continue
             if is_solo_cat:
                 ok, _ = check_solo(it)
+            elif is_mms_cat:
+                if score_phone_leak(it) <= 0:
+                    continue
+                ok, _ = check_universal(it)
             else:
                 ok, _ = check_universal(it)
             if ok:
@@ -385,7 +427,7 @@ def rebuild():
             assigned_ids.add(it["id"])
             added_counts["xfhq_phone_selfie"] += 1
 
-    # E. ROUTE PAKISTANI CANDIDATES
+    # E. ROUTE PAKISTANI CANDIDATES (AUTHENTIC PHONE LEAKS ONLY)
     paki_pat = re.compile(r"(?i)\b(pakistan|pakistani|lahore|karachi|islamabad|rawalpindi|peshawar|punjabi|pathan|minahil|alina|imsha|alisha|ayesha|zartaj|marry|faisalabad|multan|gujranwala|sialkot)\b")
 
     for it in paki + masti + desi:
@@ -396,18 +438,17 @@ def rebuild():
             continue
         name = it.get("name", "")
         txt = f"{name} {' '.join(it.get('tags', []))}"
-        if WESTERN_PORNSTAR_PAT.search(txt):
+        if WESTERN_PORNSTAR_PAT.search(txt) or CREATOR_OR_STUDIO_BAN.search(txt):
             continue
         if paki_pat.search(txt) or any("pakistan" in t.lower() for t in it.get("tags", [])):
-            ok, _ = check_universal(it)
-            if ok:
-                catalogs_items["xfhq_desi_pakistan"].append(it)
-                assigned_ids.add(it["id"])
-                added_counts["xfhq_desi_pakistan"] += 1
+            if score_phone_leak(it) > 0:
+                ok, _ = check_universal(it)
+                if ok:
+                    catalogs_items["xfhq_desi_pakistan"].append(it)
+                    assigned_ids.add(it["id"])
+                    added_counts["xfhq_desi_pakistan"] += 1
 
-    # F. ROUTE DESI MMS & CREATORS
-    mms_pat = re.compile(r"(?i)\b(mms|viral|leak|scandal|hotel|tape|hidden|cam|call|room|caught)\b")
-
+    # F. ROUTE AUTHENTIC DESI PHONE MMS LEAKS (ZERO CREATOR SLOP)
     for it in desi + masti + paki:
         if it["id"] in assigned_ids:
             continue
@@ -416,15 +457,10 @@ def rebuild():
             continue
         name = it.get("name", "")
         txt = f"{name} {' '.join(it.get('tags', []))}"
-        if WESTERN_PORNSTAR_PAT.search(txt):
+        if WESTERN_PORNSTAR_PAT.search(txt) or CREATOR_OR_STUDIO_BAN.search(txt):
             continue
 
-        ok_solo, _ = check_solo(it)
-        if ok_solo:
-            catalogs_items["xfhq_desi_creators"].append(it)
-            assigned_ids.add(it["id"])
-            added_counts["xfhq_desi_creators"] += 1
-        else:
+        if score_phone_leak(it) > 0:
             ok, _ = check_universal(it)
             if ok:
                 catalogs_items["xfhq_desi_mms"].append(it)
@@ -440,9 +476,10 @@ def rebuild():
     for cid in ["xfhq_thick_booty", "xfhq_shower_wet", "xfhq_solo_strip", "xfhq_phone_selfie"]:
         catalogs_items[cid].sort(key=lambda x: rank_key(x, special_id=haley_item["id"]))
 
-    for cid in ["xfhq_desi_mms", "xfhq_desi_creators", "xfhq_desi_pakistan"]:
+    for cid in ["xfhq_desi_mms", "xfhq_desi_pakistan"]:
         catalogs_items[cid].sort(
             key=lambda x: (
+                -score_phone_leak(x),  # Purest phone leaks (calls, bedroom, hotel, snapchat) first
                 0 if "720" in str(x.get("quality", "")) else 1,
                 -x.get("likes", 0) if isinstance(x.get("likes"), int) else 0
             )
@@ -602,8 +639,8 @@ def rebuild():
         "version": ver,
         "name": "⭐ Vidi 4K: Solo, Tease & Desi MMS Suite",
         "description": (
-            f"Curated Stremio Master Suite: {total_active} videos across 7 categories. "
-            f"Direct 1080p+/4K Portrait Solo, OnlyFans Leaks, Striptease, Shower, Curvy Twerk & Authentic Desi/Pakistani MMS Leaks. "
+            f"Curated Stremio Master Suite: {total_active} videos across {len(TARGET_CATALOG_IDS)} categories. "
+            f"Direct 1080p+/4K Portrait Solo, OnlyFans Leaks, Striptease, Shower, Curvy Twerk & Authentic Desi/Pakistani Phone MMS Leaks. "
             f"100% Filtered & Verified Direct Streams."
         ),
         "resources": ["catalog", "meta", "stream"],
@@ -640,7 +677,7 @@ def rebuild():
                 m3u_4k.append(line_inf)
                 m3u_4k.append(stream)
 
-    for cid in ["xfhq_desi_mms", "xfhq_desi_creators", "xfhq_desi_pakistan"]:
+    for cid in ["xfhq_desi_mms", "xfhq_desi_pakistan"]:
         cname = next(c["name"] for c in TARGET_CATALOGS if c["id"] == cid)
         for it in catalogs_items[cid]:
             dur = 120
