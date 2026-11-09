@@ -283,6 +283,8 @@ def rebuild():
     paki = json.loads((REPO_ROOT / "pakistani_all.json").read_text(encoding="utf-8"))["items"]
     desi = json.loads((REPO_ROOT / "desi_all.json").read_text(encoding="utf-8"))["items"]
     masti = json.loads((REPO_ROOT / "mastiraja_all.json").read_text(encoding="utf-8"))["items"]
+    harvested_path = REPO_ROOT / "harvested_creators.json"
+    harvested = json.loads(harvested_path.read_text(encoding="utf-8")) if harvested_path.exists() else []
 
     # D. ROUTE NEW TEASE ITEMS INTO TARGET ROWS
     shower_tags = {"Shower", "Bath", "Soapy"}
@@ -322,6 +324,34 @@ def rebuild():
             assigned_ids.add(it["id"])
             added_counts["xfhq_solo_strip"] += 1
         elif tags.intersection(phone_tags) or phone_kws.search(txt) or it.get("orientation") == "vertical":
+            catalogs_items["xfhq_phone_selfie"].append(it)
+            assigned_ids.add(it["id"])
+            added_counts["xfhq_phone_selfie"] += 1
+
+    # D2. ROUTE HARVESTED CREATOR CLIPS (REDGIFS / ONLYFANS USERS)
+    for it in harvested:
+        if it["id"] in assigned_ids:
+            continue
+        ok, _ = check_solo(it)
+        if not ok:
+            continue
+        tags = set(it.get("tags", []))
+        name = it.get("name", "")
+        txt = f"{name} {' '.join(tags)}"
+
+        if tags.intersection(shower_tags) or shower_kws.search(txt):
+            catalogs_items["xfhq_shower_wet"].append(it)
+            assigned_ids.add(it["id"])
+            added_counts["xfhq_shower_wet"] += 1
+        elif tags.intersection(thick_tags) or thick_kws.search(txt):
+            catalogs_items["xfhq_thick_booty"].append(it)
+            assigned_ids.add(it["id"])
+            added_counts["xfhq_thick_booty"] += 1
+        elif tags.intersection(strip_tags) or strip_kws.search(txt):
+            catalogs_items["xfhq_solo_strip"].append(it)
+            assigned_ids.add(it["id"])
+            added_counts["xfhq_solo_strip"] += 1
+        else:
             catalogs_items["xfhq_phone_selfie"].append(it)
             assigned_ids.add(it["id"])
             added_counts["xfhq_phone_selfie"] += 1
@@ -482,11 +512,19 @@ def rebuild():
         if q:
             search_queries.add(q)
 
-    # Add core queries
+    # Add core queries and requested creator handles
     core_queries = [
         "", "1080p", "4k", "shower", "bath", "twerk", "booty", "strip", "tease",
         "onlyfans", "selfie", "mirror", "amateur", "solo", "pakistani", "desi",
-        "mms", "creators", "haley", "curvy", "thick", "soapy", "lingerie", "dance"
+        "mms", "creators", "haley", "curvy", "thick", "soapy", "lingerie", "dance",
+        "whitebat", "cutesylucy", "respectedcommander1", "galablack12", "toxicant",
+        "kenalialuv", "scarlettcross", "sandrossi", "halibell", "hhhkcncm",
+        "audreyandsadie", "leilacopperbottom", "theivoryfox", "drydiggler", "snarkvixen",
+        "virginiabsbsbsns", "violetbrandani", "goatzillax", "laderlora225", "sofiamiller",
+        "nudespair", "harry2000", "rorryree", "violetmoore", "lunawickedsoul",
+        "cumslutqueen", "princessiggy", "pinkdroid462", "theemilylynne", "cyberlycrush",
+        "idontwatchporn1", "populardick", "aaronsnowxxx", "phdprincess", "yamimommy",
+        "thiccameron", "blondeadobo", "stupittard", "lilbraids", "needitforme", "applefriend"
     ]
     for q in core_queries:
         search_queries.add(q)
@@ -540,7 +578,7 @@ def rebuild():
         ),
         "resources": ["catalog", "meta", "stream"],
         "types": ["movie"],
-        "idPrefixes": ["xfhq", "masti_", "pb_", "paki_", "desi_"],
+        "idPrefixes": ["xfhq", "masti_", "pb_", "paki_", "desi_", "rg_"],
         "catalogs": TARGET_CATALOGS,
         "behaviorHints": {"adult": True, "configurable": False}
     }
