@@ -1,1 +1,116 @@
-{"id":"com.savaa.stremio.solo","version":"6.261109.407","name":"⭐ Vidi 4K: Solo, Tease & Desi MMS Suite","description":"Curated Stremio Master Suite: 4704 videos across 7 categories. Direct 1080p+/4K Portrait Solo, OnlyFans Leaks, Striptease, Shower, Curvy Twerk & Authentic Desi/Pakistani MMS Leaks. 100% Filtered & Verified Direct Streams.","resources":["catalog","meta","stream"],"types":["movie"],"idPrefixes":["xfhq","masti_","pb_","paki_","desi_","rg_"],"catalogs":[{"type":"movie","id":"xfhq_phone_selfie","name":"Portrait: Phone & Mirror Selfies / OnlyFans","extra":[{"name":"skip","isRequired":false}]},{"type":"movie","id":"xfhq_solo_strip","name":"Portrait: Solo Striptease & Tease","extra":[{"name":"skip","isRequired":false}]},{"type":"movie","id":"xfhq_shower_wet","name":"Portrait: Shower & Wet Bath","extra":[{"name":"skip","isRequired":false}]},{"type":"movie","id":"xfhq_thick_booty","name":"Portrait: Curvy & Twerk Flaunt","extra":[{"name":"skip","isRequired":false}]},{"type":"movie","id":"xfhq_desi_mms","name":"Desi MMS Leaks","extra":[{"name":"skip","isRequired":false}]},{"type":"movie","id":"xfhq_desi_pakistan","name":"Pakistani Solo & Cam Leaks","extra":[{"name":"skip","isRequired":false}]},{"type":"movie","id":"xfhq_desi_creators","name":"Desi Creators & Nude Solo","extra":[{"name":"skip","isRequired":false}]},{"type":"movie","id":"xfhq_search","name":"Search Vidi 4K","extra":[{"name":"search","isRequired":true}]}],"behaviorHints":{"adult":true,"configurable":false}}
+{
+  "id": "com.savaa.stremio.solo",
+  "version": "6.261109.424",
+  "name": "⭐ Vidi 4K: Solo, Tease & Desi MMS Suite",
+  "description": "Curated Stremio Master Suite: 5197 videos across 7 categories. Direct 1080p+/4K Portrait Solo, OnlyFans Leaks, Striptease, Shower, Curvy Twerk & Authentic Desi/Pakistani MMS Leaks. 100% Filtered & Verified Direct Streams.",
+  "resources": [
+    "catalog",
+    "meta",
+    "stream"
+  ],
+  "types": [
+    "movie"
+  ],
+  "idPrefixes": [
+    "xfhq",
+    "masti_",
+    "pb_",
+    "paki_",
+    "desi_",
+    "rg_"
+  ],
+  "catalogs": [
+    {
+      "type": "movie",
+      "id": "xfhq_phone_selfie",
+      "name": "Portrait: Phone & Mirror Selfies / OnlyFans",
+      "extra": [
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "xfhq_solo_strip",
+      "name": "Portrait: Solo Striptease & Tease",
+      "extra": [
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "xfhq_shower_wet",
+      "name": "Portrait: Shower & Wet Bath",
+      "extra": [
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "xfhq_thick_booty",
+      "name": "Portrait: Curvy & Twerk Flaunt",
+      "extra": [
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "xfhq_desi_mms",
+      "name": "Desi MMS Leaks",
+      "extra": [
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "xfhq_desi_pakistan",
+      "name": "Pakistani Solo & Cam Leaks",
+      "extra": [
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "xfhq_desi_creators",
+      "name": "Desi Creators & Nude Solo",
+      "extra": [
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "xfhq_search",
+      "name": "Search Vidi 4K",
+      "extra": [
+        {
+          "name": "search",
+          "isRequired": true
+        }
+      ]
+    }
+  ],
+  "behaviorHints": {
+    "adult": true,
+    "configurable": false
+  }
+}

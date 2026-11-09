@@ -357,9 +357,9 @@ def rebuild():
             added_counts["xfhq_phone_selfie"] += 1
 
     # E. ROUTE PAKISTANI CANDIDATES
-    paki_pat = re.compile(r"(?i)\b(pakistan|pakistani|lahore|karachi|islamabad|rawalpindi|peshawar|punjabi|pathan|minahil|alina|imsha|alisha|ayesha|zartaj|marry)\b")
+    paki_pat = re.compile(r"(?i)\b(pakistan|pakistani|lahore|karachi|islamabad|rawalpindi|peshawar|punjabi|pathan|minahil|alina|imsha|alisha|ayesha|zartaj|marry|faisalabad|multan|gujranwala|sialkot)\b")
 
-    for it in paki + masti:
+    for it in paki + masti + desi:
         if it["id"] in assigned_ids:
             continue
         st = it.get("stream_url") or it.get("url") or ""
@@ -369,7 +369,7 @@ def rebuild():
         txt = f"{name} {' '.join(it.get('tags', []))}"
         if WESTERN_PORNSTAR_PAT.search(txt):
             continue
-        if paki_pat.search(txt):
+        if paki_pat.search(txt) or any("pakistan" in t.lower() for t in it.get("tags", [])):
             ok, _ = check_universal(it)
             if ok:
                 catalogs_items["xfhq_desi_pakistan"].append(it)
@@ -379,7 +379,7 @@ def rebuild():
     # F. ROUTE DESI MMS & CREATORS
     mms_pat = re.compile(r"(?i)\b(mms|viral|leak|scandal|hotel|tape|hidden|cam|call|room|caught)\b")
 
-    for it in desi + masti:
+    for it in desi + masti + paki:
         if it["id"] in assigned_ids:
             continue
         st = it.get("stream_url") or it.get("url") or ""
@@ -395,7 +395,7 @@ def rebuild():
             catalogs_items["xfhq_desi_creators"].append(it)
             assigned_ids.add(it["id"])
             added_counts["xfhq_desi_creators"] += 1
-        elif mms_pat.search(txt) or any("mms" in t.lower() or "leak" in t.lower() or "viral" in t.lower() for t in it.get("tags", [])):
+        else:
             ok, _ = check_universal(it)
             if ok:
                 catalogs_items["xfhq_desi_mms"].append(it)
@@ -517,6 +517,7 @@ def rebuild():
         "", "1080p", "4k", "shower", "bath", "twerk", "booty", "strip", "tease",
         "onlyfans", "selfie", "mirror", "amateur", "solo", "pakistani", "desi",
         "mms", "creators", "haley", "curvy", "thick", "soapy", "lingerie", "dance",
+        "viral", "leak", "scandal", "call", "hotel", "bhabhi", "aunty", "college", "tape", "punjabi", "lahore", "karachi",
         "whitebat", "cutesylucy", "respectedcommander1", "galablack12", "toxicant",
         "kenalialuv", "scarlettcross", "sandrossi", "halibell", "hhhkcncm",
         "audreyandsadie", "leilacopperbottom", "theivoryfox", "drydiggler", "snarkvixen",
