@@ -1,8 +1,8 @@
 {
   "id": "com.savaa.stremio.solo",
-  "version": "6.261111.1156",
-  "name": "⭐ Vidi 4K: Solo, Tease & Desi MMS Suite",
-  "description": "Curated Stremio Master Suite: 856 verified 100% active videos across 6 categories. Direct 1080p+/4K Portrait Solo, OnlyFans Leaks, Striptease, Shower, Curvy Twerk & Authentic Desi/Pakistani Phone MMS Leaks. 100% Filtered & Verified Direct Streams.",
+  "version": "7.261111.1219",
+  "name": "⭐ Vidi 4K: Portrait Solo & Creator Suite",
+  "description": "Curated Stremio Master Suite: 100% verified active 1080p+ Vertical Solo, OnlyFans & Fansly Creators, Booty Twerk, Striptease, Shower Wet & Mirror Selfies. Zero dead links, 100% playable direct MP4 streams.",
   "resources": [
     "catalog",
     "meta",
@@ -12,18 +12,13 @@
     "movie"
   ],
   "idPrefixes": [
-    "xfhq",
-    "masti_",
-    "pb_",
-    "paki_",
-    "desi_",
     "rg_"
   ],
   "catalogs": [
     {
       "type": "movie",
-      "id": "xfhq_phone_selfie",
-      "name": "Portrait: Phone & Mirror Selfies / OnlyFans",
+      "id": "vidi_thick_booty",
+      "name": "🍑 Portrait: Curvy & Twerk Flaunt",
       "extra": [
         {
           "name": "skip",
@@ -33,8 +28,8 @@
     },
     {
       "type": "movie",
-      "id": "xfhq_solo_strip",
-      "name": "Portrait: Solo Striptease & Tease",
+      "id": "vidi_solo_strip",
+      "name": "👙 Portrait: Solo Striptease & Tease",
       "extra": [
         {
           "name": "skip",
@@ -44,8 +39,8 @@
     },
     {
       "type": "movie",
-      "id": "xfhq_shower_wet",
-      "name": "Portrait: Shower & Wet Bath",
+      "id": "vidi_shower_wet",
+      "name": "🚿 Portrait: Shower & Wet Bath",
       "extra": [
         {
           "name": "skip",
@@ -55,8 +50,8 @@
     },
     {
       "type": "movie",
-      "id": "xfhq_thick_booty",
-      "name": "Portrait: Curvy & Twerk Flaunt",
+      "id": "vidi_mirror_selfie",
+      "name": "📱 Portrait: Phone & Mirror Selfies / OnlyFans",
       "extra": [
         {
           "name": "skip",
@@ -66,30 +61,8 @@
     },
     {
       "type": "movie",
-      "id": "xfhq_desi_mms",
-      "name": "Desi Phone MMS Leaks",
-      "extra": [
-        {
-          "name": "skip",
-          "isRequired": false
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "xfhq_desi_pakistan",
-      "name": "Pakistani Phone & Video Call Leaks",
-      "extra": [
-        {
-          "name": "skip",
-          "isRequired": false
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "xfhq_search",
-      "name": "Search Vidi 4K",
+      "id": "vidi_search",
+      "name": "🔍 Search Vidi 4K",
       "extra": [
         {
           "name": "search",

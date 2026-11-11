@@ -70,19 +70,45 @@ def is_clean_solo(gif):
     return True
 
 REQUESTED_CREATORS = [
+    'lit1le_kitty', 'emili_lit1le', 'vickyltk', 'licalicalica', 'cceelinne',
+    'anastasiis', 'manygirlz', 'juliet.bb', 'stella.cardo', 'amybounce',
+    'leia_von', 'emilysweet', 'your_briana', 'marinettevip', 'japp_leack',
+    'alinabecker', 'sophiemudd', 'hannahowo', 'ari kytsya', 'arikytsya',
+    'maria.marry', 'mariamarry', 'jess fox', 'jessfox', 'lilygrace',
+    'virginlily', 'wellass', 'comatozze', 'fantasybabe', 'blackwidof',
+    'littlereislin', 'kisscat', 'mila daisy', 'miladaisy', 'amalie pearl',
+    'amaliepearl', 'luxury girl', 'luxurygirl', 'arisha mills', 'arishamills',
+    'bella mur', 'bellamur', 'ivana montana', 'ivanamontana', 'diana rider',
+    'dianarider', 'sonya blaze', 'sonyablaze', 'anny walker', 'annywalker',
+    'verlonis', 'elina lizz', 'elinalizz', 'yummy mira', 'yummymira',
+    'daliamorgan', 'californiababe', 'alexa poshspicy', 'alexaposhspicy',
+    'skye wood', 'skyewood', 'savannah watson', 'savannahwatson', 'slimthick vic',
+    'slimthickvic', 'hazel moore', 'hazelmoore', 'katrina colt', 'katrinacolt',
+    'isabella de laa', 'isabelladelaa', 'bess breast', 'bessbreast', 'mary moody',
+    'marymoody', 'anie darling', 'aniedarling', 'rebecca volpetti', 'rebeccavolpetti',
+    'victoria benz', 'victoriabenz', 'chloe lamour', 'chloelamour', 'stacy cruz',
+    'stacycruz', 'cicii doll', 'ciciidoll', 'nicoly rio', 'nicolyrio',
+    'olivia bay', 'oliviabay', 'hot pearl', 'hotpearl', 'sugary kitty',
+    'sugarykitty', 'alexa flexy', 'alexaflexy', 'freya parker', 'freyaparker',
+    'harley haze', 'harleyhaze', 'kelsey kane', 'kelseykane', 'myra moans',
+    'myramoans', 'april olsen', 'aprilolsen', 'charly summer', 'charlysummer',
+    'emma magnolia', 'emmamagnolia', 'arietta adams', 'ariettaadams',
+    'bunny colby', 'bunnycolby', 'vanessa sky', 'vanessasky', 'cherry kiss',
+    'cherrykiss', 'katerina hartlova', 'katerinahartlova', 'alexis crystal',
+    'alexiscrystal', 'eva elfie', 'evaelfie', 'little caprice', 'littlecaprice',
+    'jia lissa', 'jialissa', 'mila azul', 'milaazul', 'lana roy', 'lanaroy',
+    # Plus LO's favorite active vertical creators
     'whitebat', 'cutesylucy', 'respectedcommander1', 'galablack12', 'toxicant',
-    'kenalialuv', 'scarlettcross', 'sandrossi', 'halibell', 'hhhkcncm',
-    'audreyandsadie', 'leilacopperbottom', 'theivoryfox', 'drydiggler', 'snarkvixen',
-    'virginiabsbsbsns', 'violetbrandani', 'goatzillax', 'laderlora225', 'sofiamiller',
-    'nudespair', 'harry2000', 'rorryree', 'violetmoore', 'lunawickedsoul',
-    'cumslutqueen', 'princessiggy', 'pinkdroid462', 'theemilylynne', 'cyberlycrush',
-    'idontwatchporn1', 'populardick', 'aaronsnowxxx', 'phdprincess', 'yamimommy',
-    'thiccameron', 'blondeadobo', 'stupittard', 'lilbraids', 'needitforme', 'applefriend'
+    'kenalialuv', 'halibell', 'leilacopperbottom', 'theivoryfox', 'goatzillax',
+    'princessiggy', 'pinkdroid462', 'theemilylynne', 'cyberlycrush', 'phdprincess',
+    'yamimommy', 'thiccameron', 'blondeadobo', 'lilbraids'
 ]
 
 SIMILAR_SEARCH_QUERIES = [
     'curvy twerk', 'thick onlyfans', 'shower tease', 'mirror selfie nude',
-    'lingerie striptease', 'thick booty dance', 'sensual shower', 'baddie selfie'
+    'lingerie striptease', 'thick booty dance', 'sensual shower', 'baddie selfie',
+    'scrunch leggings', 'bikini try on', 'steamy shower', 'bed tease',
+    'sensual massage', 'body oil tease', 'mirror twerk', 'gfe solo'
 ]
 
 def harvest():
@@ -92,8 +118,20 @@ def harvest():
     headers["Authorization"] = f"Bearer {token}"
     print("Token OK!")
 
+    out_file = REPO_ROOT / "harvested_creators.json"
     harvested = []
     seen_ids = set()
+    if out_file.exists():
+        try:
+            existing = json.loads(out_file.read_text(encoding="utf-8"))
+            for it in existing:
+                harvested.append(it)
+                gid = it.get("id", "").replace("rg_", "")
+                if gid:
+                    seen_ids.add(gid)
+            print(f"Loaded {len(harvested)} existing items from {out_file.name}")
+        except Exception as e:
+            print(f"Error loading existing {out_file.name}: {e}")
 
     # A. Harvest requested creators
     print("\n=== Step 2: Harvesting Requested Creators ===")
