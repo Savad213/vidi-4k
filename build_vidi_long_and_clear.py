@@ -389,7 +389,7 @@ def run():
         "description": "Curated Stremio Master Suite: 100% verified active 1080p+ Vertical Solo, Curvy Twerk, Striptease, Shower Wet, Mirror Selfies & Extended Long Sessions (10-30+ mins). Strictly natural curves & PAWG, zero skinny or excluded material, crystal-clear retina thumbnails, direct MP4 streams.",
         "resources": ["catalog", "meta", "stream"],
         "types": ["movie"],
-        "idPrefixes": ["xfhq_"],
+        "idPrefixes": ["xfhq", "xfhq_"],
         "catalogs": TARGET_CATALOGS,
         "behaviorHints": {
             "adult": True,
