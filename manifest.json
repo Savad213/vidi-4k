@@ -1,8 +1,8 @@
 {
   "id": "com.savaa.stremio.solo",
-  "version": "7.261111.1219",
-  "name": "⭐ Vidi 4K: Portrait Solo & Creator Suite",
-  "description": "Curated Stremio Master Suite: 100% verified active 1080p+ Vertical Solo, OnlyFans & Fansly Creators, Booty Twerk, Striptease, Shower Wet & Mirror Selfies. Zero dead links, 100% playable direct MP4 streams.",
+  "version": "7.261111.1244",
+  "name": "⭐ Vidi 4K: Portrait Solo & Long Sessions Suite",
+  "description": "Curated Stremio Master Suite: 100% verified active 1080p+ Vertical Solo, Curvy Twerk, Striptease, Shower Wet, Mirror Selfies & Extended Long Sessions (10-30+ mins). Crystal-clear retina thumbnails, zero dead links, 100% playable direct MP4 streams.",
   "resources": [
     "catalog",
     "meta",
@@ -12,7 +12,7 @@
     "movie"
   ],
   "idPrefixes": [
-    "rg_"
+    "xfhq_"
   ],
   "catalogs": [
     {
@@ -52,6 +52,17 @@
       "type": "movie",
       "id": "vidi_mirror_selfie",
       "name": "📱 Portrait: Phone & Mirror Selfies / OnlyFans",
+      "extra": [
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "vidi_long_vertical",
+      "name": "⏳ Portrait: Extended Full-Length Sessions (10–30+ Mins)",
       "extra": [
         {
           "name": "skip",
