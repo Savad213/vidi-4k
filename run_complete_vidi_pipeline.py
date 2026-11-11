@@ -125,11 +125,12 @@ SOLO_EXCLUSION_PATTERN = re.compile(r"""(?i)\b(
 )\b""", re.VERBOSE)
 
 WESTERN_PORNSTAR_PAT = re.compile(r"""(?i)\b(
-    violet\s*myers|riley\s*reid|lana\s*rhoades|eva\s*elfie|angela\s*white|abella\s*danger|
+    violet\s*myers|riley\s*reid|lana\s*rhoades|angela\s*white|abella\s*danger|
     kendra\s*lust|brandi\s*love|cory\s*chase|alexis\s*texas|emily\s*emika|autumn\s*falls|
-    gabbie\s*carter|leah\s*gotti|abigaiil\s*morris|sweetie\s*fox|lena\s*the\s*plug
+    gabbie\s*carter|abigaiil\s*morris|lena\s*the\s*plug
 )\b""", re.VERBOSE)
 
+# Strict ban on creators, models, webseries, and studios in MMS / Pakistani leak rows
 CREATOR_OR_STUDIO_BAN = re.compile(
     r"""(?i)\b(
         onlyfans|fansly|creator|creators|patreon|influencer|webcam|camgirl|model|models|
@@ -139,6 +140,90 @@ CREATOR_OR_STUDIO_BAN = re.compile(
         kiarablay|nandana|nandana\s*krishnan|anamika\s*desai|subway\s*girl
     )\b""", re.VERBOSE
 )
+
+# Canonical 84 Creator Models and Handles from LO (2026-11-11 update)
+APPROVED_CREATORS_LIST = [
+    "maria.marry", "mariamarry", "jess fox", "jessfox", "lilygrace", "emili_lit1le", "lit1le_kitty",
+    "adele", "hannah owo", "hannahowo", "rebecca mcleod", "rebeccamcleod", "virginlily", "vicky", "vickyltk",
+    "licalicalica", "celine", "cceelinne", "anastasia", "anastasiis", "manygirlz", "juliet bb", "juliet.bb",
+    "stella cardo", "stella.cardo", "amybounce", "leia_von", "emilysweet", "your_briana", "ari kytsya",
+    "arikytsya", "comatozze", "fantasybabe", "blackwidof", "marinettevip", "wellass", "alina becker",
+    "alinabecker", "japp_leack", "sia siberia", "siasiberia", "polly yangs", "pollyyangs", "sweetfantasy131",
+    "littlereislin", "kisscat", "mila daisy", "miladaisy", "sophie mudd", "sophiemudd", "amalie pearl",
+    "amaliepearl", "luxury girl", "luxurygirl", "arisha mills", "arishamills", "bella mur", "bellamur",
+    "ivana montana", "ivanamontana", "diana rider", "dianarider", "sonya blaze", "sonyablaze", "anny walker",
+    "annywalker", "verlonis", "elina lizz", "elinalizz", "yummy mira", "yummymira", "daliamorgan",
+    "californiababe", "alexa poshspicy", "alexaposhspicy", "skye wood", "skyewood", "savannah watson",
+    "savannahwatson", "slimthick vic", "slimthickvic", "hazel moore", "hazelmoore", "katrina colt",
+    "katrinacolt", "isabella de laa", "isabelladelaa", "bess breast", "bessbreast", "mary moody",
+    "marymoody", "anie darling", "aniedarling", "rebecca volpetti", "rebeccavolpetti", "victoria benz",
+    "victoriabenz", "chloe lamour", "chloelamour", "stacy cruz", "stacycruz", "cicii doll", "ciciidoll",
+    "nicoly rio", "nicolyrio", "olivia bay", "oliviabay", "hot pearl", "hotpearl", "sugary kitty",
+    "sugarykitty", "alexa flexy", "alexaflexy", "freya parker", "freyaparker", "harley haze", "harleyhaze",
+    "kelsey kane", "kelseykane", "myra moans", "myramoans", "april olsen", "aprilolsen", "charly summer",
+    "charlysummer", "emma magnolia", "emmamagnolia", "arietta adams", "ariettaadams", "bunny colby",
+    "bunnycolby", "vanessa sky", "vanessasky", "cherry kiss", "cherrykiss", "katerina hartlova",
+    "katerinahartlova", "alexis crystal", "alexiscrystal", "eva elfie", "evaelfie", "little caprice",
+    "littlecaprice", "jia lissa", "jialissa", "mila azul", "milaazul", "lana roy", "lanaroy"
+]
+
+PREFERRED_CREATORS_PRIORITY = {
+    # Tier 0: Direct Requested Creators
+    "cyberlycrush": 200, "thiccameron": 195, "whitebat": 190, "theemilylynne": 185,
+    "cutesylucy": 180, "kenalialuv": 175, "pinkdroid462": 170, "phdprincess": 165,
+    "princessiggy": 160, "halibell": 155, "leilacopperbottom": 150, "toxicant": 145,
+    "respectedcommander1": 140, "goatzillax": 135, "galablack12": 130, "theivoryfox": 125,
+    "lilbraids": 120, "blondeadobo": 115, "yamimommy": 110, "banana12adl": 105,
+}
+for c in APPROVED_CREATORS_LIST:
+    if c not in PREFERRED_CREATORS_PRIORITY:
+        PREFERRED_CREATORS_PRIORITY[c] = 160
+
+# Canonical 6 Tag Categories
+ALL_PREFERRED_TAGS = [
+    # 1. Tease & Striptease
+    "tease", "striptease", "slow tease", "sensual tease", "slow strip", "undressing",
+    "disrobing", "clothing peel", "slip down", "edging tease", "dance tease", "sensual dance",
+    "peekaboo", "flashing", "skirt lift", "skirt flip", "dress lift", "robe tease",
+    "towel drop", "towel tease", "bikini peel", "strap drop", "bra drop", "button pop",
+    "zipper tease", "slow unbutton", "garter tease", "stocking peel", "sensual reveal",
+    "partial reveal", "coy tease",
+    # 2. Booty, Twerk & Motion
+    "twerk", "twerking", "booty shake", "ass shake", "booty bounce", "ass bounce",
+    "booty clap", "ass clap", "booty jiggle", "ass jiggle", "jiggle physics", "booty wiggle",
+    "hip shake", "slow mo twerk", "slow motion shake", "standing twerk", "kneeling twerk",
+    "wall twerk", "floor twerk", "arch twerk", "booty pop", "ass wave", "glute flex",
+    "glute spread", "butt cheek clap", "rhythmic bounce", "twerk solo", "bed twerk",
+    "mirror twerk", "oil twerk", "wet twerk", "bubble butt shake", "bubble butt", "phat",
+    "big ass", "thick booty", "curvy", "pawg", "slim-thick",
+    # 3. Shower, Bath, Wet & Oil
+    "shower", "steamy shower", "shower tease", "shower solo", "wet look", "wet skin",
+    "dripping wet", "soapy", "soap lather", "lathering", "bubble bath", "bath tub",
+    "wet hair", "wet t-shirt", "body oil", "baby oil", "oiled", "oiled booty",
+    "oil sheen", "oil tease", "nuru", "nuru massage", "lotion tease", "sensual massage",
+    "tactile touch", "wet leggings", "glass door tease", "water droplets", "soaked", "foam play",
+    # 4. Wardrobe & Fit Checks
+    "try on haul", "bikini try on", "lingerie try on", "swimsuit try on", "yoga pants",
+    "gym leggings", "scrunch leggings", "honeycomb leggings", "seamless leggings",
+    "booty shorts", "spandex", "daisy dukes", "thong tease", "g-string tease",
+    "micro thong", "cheeky", "underbutt", "sheer", "see through", "mesh shorts",
+    "fishnet", "silk robe", "satin slips", "high waisted", "lace bodysuit", "teddy",
+    "crop top", "tight dress", "bodycon dress",
+    # 5. Angles, Posing & Mirror
+    "mirror tease", "mirror booty", "mirror solo", "back arch", "arching", "from behind",
+    "rear view", "backside", "bending over", "bent over", "all fours", "doggy tease",
+    "kneeling tease", "prone bone tease", "close up booty", "macro booty", "low angle",
+    "bottom up view", "over the shoulder", "wall arch", "bed arch", "squat tease", "deep squat",
+    # 6. Solo, GFE & Perspective
+    "solo", "sensual solo", "gfe solo", "bed tease", "morning routine", "waking up",
+    "sheet tease", "self touch", "fingering solo", "vertical pov", "phone cam",
+    "selfie video", "eye contact", "smile tease", "whisper tease", "talk tease",
+    "bedroom realism", "private room", "floor solo", "car tease", "balcony tease",
+    "hotel room tease"
+]
+
+PREFERRED_TAGS_SET = set(t.lower() for t in ALL_PREFERRED_TAGS)
+CURVY_BODY_KEYWORDS = re.compile(r"(?i)\b(curvy|thick|slim-thick|pawg|bubble\s*butt|phat|big\s*ass|thick\s*booty|curves|natural\s*curves|hourglass|soft\s*thighs|scrunch\s*leggings|try\s*on|mirror\s*tease)\b")
 
 PHONE_LEAK_KEYWORDS = [
     (r"(?i)\b(video\s*call|videocall|call\s*leak|call\s*recording)\b", 60),
@@ -156,7 +241,7 @@ def score_phone_leak(item):
     name = item.get("name", "")
     tags = " ".join(item.get("tags", []))
     txt = f"{name} {tags}"
-    if CREATOR_OR_STUDIO_BAN.search(txt) or WESTERN_PORNSTAR_PAT.search(txt):
+    if WESTERN_PORNSTAR_PAT.search(txt):
         return -1000
     score = 0
     for pat, pts in PHONE_LEAK_KEYWORDS:
@@ -164,30 +249,35 @@ def score_phone_leak(item):
             score += pts
     return score
 
-PREFERRED_CREATORS_PRIORITY = {
-    "cyberlycrush": 200,
-    "thiccameron": 190,
-    "theemilylynne": 185,
-    "whitebat": 180,
-    "cutesylucy": 175,
-    "kenalialuv": 170,
-    "pinkdroid462": 165,
-    "phdprincess": 160,
-    "princessiggy": 155,
-    "halibell": 150,
-    "leilacopperbottom": 145,
-    "toxicant": 140,
-    "respectedcommander1": 135,
-    "goatzillax": 130,
-    "galablack12": 125,
-    "theivoryfox": 120,
-    "lilbraids": 115,
-    "blondeadobo": 110,
-    "yamimommy": 105,
-    "banana12adl": 100,
-}
+def creator_rank_score(it):
+    user = (it.get("user") or "").lower().strip()
+    name = it.get("name", "").lower()
+    tags = [t.lower() for t in it.get("tags", [])]
+    txt = f"{user} {name} {' '.join(tags)}"
 
-CURVY_BODY_KEYWORDS = re.compile(r"(?i)\b(curvy|thick|slim-thick|pawg|bubble\s*butt|phat|big\s*ass|thick\s*booty|curves|natural\s*curves|hourglass|soft\s*thighs)\b")
+    priority = 0
+    # Check if exact user match
+    if user in PREFERRED_CREATORS_PRIORITY:
+        priority = max(priority, PREFERRED_CREATORS_PRIORITY[user])
+    
+    # Check if any approved creator name/handle appears in txt
+    for c in APPROVED_CREATORS_LIST:
+        if c in txt:
+            priority = max(priority, PREFERRED_CREATORS_PRIORITY.get(c, 160))
+            break
+
+    # Preferred tags matching
+    tag_matches = sum(1 for pt in PREFERRED_TAGS_SET if pt in txt)
+    priority += min(tag_matches * 5, 40)
+
+    # Body keyword bonus
+    if CURVY_BODY_KEYWORDS.search(txt):
+        priority += 30
+
+    if it.get("orientation") == "vertical":
+        priority += 20
+
+    return priority
 
 def check_universal(item):
     name = item.get('name', '')
@@ -606,7 +696,7 @@ def main():
         encoding="utf-8"
     )
 
-    core_queries = [
+    core_queries = set([
         "", "1080p", "4k", "shower", "bath", "twerk", "booty", "strip", "tease",
         "onlyfans", "selfie", "mirror", "amateur", "solo", "pakistani", "desi",
         "mms", "creators", "curvy", "thick", "soapy", "lingerie", "dance",
@@ -614,9 +704,14 @@ def main():
         "whitebat", "cutesylucy", "respectedcommander1", "toxicant", "kenalialuv", "halibell",
         "leilacopperbottom", "theivoryfox", "princessiggy", "pinkdroid462", "theemilylynne",
         "cyberlycrush", "phdprincess", "yamimommy", "thiccameron", "blondeadobo", "goatzillax"
-    ]
-    for q in core_queries:
-        q_clean = q.lower()
+    ])
+    for c in APPROVED_CREATORS_LIST:
+        core_queries.add(c)
+    for t in ALL_PREFERRED_TAGS:
+        core_queries.add(t)
+
+    for q in sorted(core_queries):
+        q_clean = q.lower().strip()
         matches = [
             m for m in all_active_metas
             if q_clean in (m.get("name", "") + " " + " ".join(m.get("genres", []))).lower()
