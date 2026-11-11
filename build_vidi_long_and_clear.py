@@ -4,15 +4,17 @@ Vidi 4K Master Suite Rebuilder (Strict Body Profile, Pure Retina Posters, Zero E
   1. Skinny, petite, flat, tiny, small-breasted, bony models.
   2. Black / ebony / dark-skin models.
   3. Group scenes (3+ people).
-  4. Extreme rough / BDSM / dildo / machine / gape.
+  4. Extreme rough / BDSM / dildo / machine / gape / strapon.
   5. Granny / old / mature / pregnant / cartoon / anime.
-- Strictly PRIORITIZES:
-  1. Thick / curvy / PAWG / slim-thick with prominent hips, soft thighs, full butt.
-  2. Youthful adult (18+) aesthetic ("thick teen" / college creator styling).
-  3. Rhythmic motion: twerk, booty shake, bounce, jiggle physics, scrunch leggings.
-  4. Sensual tease: striptease, try-on haul, bikini/lingerie, thong, shower wet, mirror selfies.
-  5. Extended full-length sessions (10-30+ mins).
-- Pure thumbs.xfree.com crystal-clear retina thumbnails with zero referer blocks.
+- 8 Clean & Properly Segregated Categories (NO dumping ground!):
+  1. 🍑 Curvy: Twerk & Booty Shake Flaunt
+  2. 🍈 Busty & Cleavage Flaunt
+  3. 👙 Solo Striptease & Lingerie Tease
+  4. 🔥 Solo Masturbation & Sensual Touch
+  5. 🚿 Shower, Bath & Wet Oil
+  6. 📱 Phone & Mirror Selfies / OnlyFans
+  7. 💥 Vertical Couples & POV Hardcore
+  8. ⏳ Extended Full-Length Sessions (10–30+ Mins)
 """
 
 import json
@@ -30,32 +32,50 @@ PAGE_SIZE = 100
 TARGET_CATALOGS = [
     {
         "type": "movie",
-        "id": "vidi_thick_booty",
-        "name": "🍑 Portrait: Curvy & Twerk Flaunt",
+        "id": "vidi_thick_twerk",
+        "name": "🍑 Curvy: Twerk & Booty Shake Flaunt",
+        "extra": [{"name": "skip", "isRequired": False}]
+    },
+    {
+        "type": "movie",
+        "id": "vidi_busty_cleavage",
+        "name": "🍈 Busty & Cleavage Flaunt",
         "extra": [{"name": "skip", "isRequired": False}]
     },
     {
         "type": "movie",
         "id": "vidi_solo_strip",
-        "name": "👙 Portrait: Solo Striptease & Tease",
+        "name": "👙 Solo Striptease & Lingerie Tease",
+        "extra": [{"name": "skip", "isRequired": False}]
+    },
+    {
+        "type": "movie",
+        "id": "vidi_solo_touch",
+        "name": "🔥 Solo Masturbation & Sensual Touch",
         "extra": [{"name": "skip", "isRequired": False}]
     },
     {
         "type": "movie",
         "id": "vidi_shower_wet",
-        "name": "🚿 Portrait: Shower & Wet Bath",
+        "name": "🚿 Shower, Bath & Wet Oil",
         "extra": [{"name": "skip", "isRequired": False}]
     },
     {
         "type": "movie",
         "id": "vidi_mirror_selfie",
-        "name": "📱 Portrait: Phone & Mirror Selfies / OnlyFans",
+        "name": "📱 Phone & Mirror Selfies / OnlyFans",
+        "extra": [{"name": "skip", "isRequired": False}]
+    },
+    {
+        "type": "movie",
+        "id": "vidi_couples_pov",
+        "name": "💥 Vertical Couples & POV Hardcore",
         "extra": [{"name": "skip", "isRequired": False}]
     },
     {
         "type": "movie",
         "id": "vidi_long_vertical",
-        "name": "⏳ Portrait: Extended Full-Length Sessions (10–30+ Mins)",
+        "name": "⏳ Extended Full-Length Sessions (10–30+ Mins)",
         "extra": [{"name": "skip", "isRequired": False}]
     },
     {
@@ -85,8 +105,8 @@ UNIVERSAL_NEG_PAT = re.compile(r"""(?i)\b(
     pregnant|pregnancy|baby\s*bump|maternity|
     granny|gilf|elderly|old\s*woman|wrinkled|senior|aged\s*woman|
     anime|hentai|cartoon|3d|animation|sfm|blender|
-    trans|shemale|tranny|ladyboy|gay|femboy|
-    dildo|giant\s*dildo|huge\s*dildo|sybian|sex\s*machine|machine|
+    trans|shemale|tranny|ladyboy|gay|femboy|girl\s*dick|strapon|strap-on|
+    giant\s*dildo|huge\s*dildo|sybian|sex\s*machine|machine|
     gape|gaping|prolapse|fist|fisting|extreme\s*anal|
     gangbang|orgy|foursome|threesome|group|swinger|3some|4some|
     bdsm|bondage|torture|abuse|slap|choke|whipped|punish|slave|
@@ -121,7 +141,7 @@ def is_strictly_conforming(it):
     if BLACK_EBONY_PAT.search(txt):
         return False
 
-    # 3. Reject Universal Negatives (group, trans, BDSM, dildo, old, pregnant, etc.)
+    # 3. Reject Universal Negatives (group, trans, BDSM, dildo, old, pregnant, strapon, etc.)
     if UNIVERSAL_NEG_PAT.search(txt):
         return False
 
@@ -230,7 +250,7 @@ def run():
 
                 all_raw_items.append({
                     "id": str(iid),
-                    "name": it.get("name") or it.get("title") or "Vertical Solo Video",
+                    "name": it.get("name") or it.get("title") or "Vertical Video",
                     "poster": purl,
                     "thumbnail": purl,
                     "video": vurl,
@@ -250,11 +270,14 @@ def run():
     catalogs_items = defaultdict(list)
     assigned_ids = set()
 
-    # Keyword matchers
-    shower_kws = re.compile(r"(?i)\b(shower|bath|soapy|wet|oil|oiled|nuru|lotion|tub)\b")
-    thick_kws = re.compile(r"(?i)\b(twerk|booty|ass|pawg|thick|curvy|slimthick|bubble\s*butt|jiggle|bounce|clap|shake|leggings|scrunch|spandex|teen)\b")
-    strip_kws = re.compile(r"(?i)\b(strip|striptease|undress|peel|try\s*on|bikini|lingerie|thong|gstring|micro\s*thong|skirt|tease)\b")
-    mirror_kws = re.compile(r"(?i)\b(selfie|mirror|phone|onlyfans|fansly|gfe|bed|morning|baddie|pov)\b")
+    # Highly Specific Matchers
+    shower_re = re.compile(r"(?i)\b(shower|bath|soapy|wet|oil|oiled|nuru|lotion|tub)\b")
+    twerk_re = re.compile(r"(?i)\b(twerk|twerking|booty\s*shake|ass\s*shake|shaking\s*ass|booty\s*bounce|ass\s*bounce|jiggle|clap|scrunch|leggings|spandex|booty\s*dance|shakingass|pawg)\b")
+    busty_re = re.compile(r"(?i)\b(big\s*tits|bigtits|bignipples|bigareolas|bouncingtits|bouncing\s*tits|tit\s*drop|flashingtits|cleavage|huge\s*tits|heavy\s*tits|natural\s*tits|naturaltits|milf|titty|tit\s*worship)\b")
+    strip_re = re.compile(r"(?i)\b(strip|striptease|undress|peel|try\s*on|lingerie|bikini|thong|gstring|micro\s*thong|skirt|tease|teasing|costume|haul|panties)\b")
+    mastro_re = re.compile(r"(?i)\b(masturbat|finger|fingering|rubbing|pussy\s*rub|clit|orgasm|squirt|dildo|moan|solo\s*play|pussy\s*play|spread\s*pussy)\b")
+    mirror_re = re.compile(r"(?i)\b(selfie|mirror|phone|onlyfans|fansly|gfe|bed|morning|baddie|amateur|snapchat|bedroom)\b")
+    couple_re = re.compile(r"(?i)\b(blowjob|bj|cock|suck|deepthroat|fucking|fucked|doggystyle|doggy|creampie|facial|cumshot|pov|riding|hardcore)\b")
 
     # 1. Extended Long Vertical Sessions (>= 600s / 10+ minutes)
     for it in clean_items:
@@ -263,39 +286,89 @@ def run():
             catalogs_items["vidi_long_vertical"].append(it)
             assigned_ids.add(it["id"])
 
-    # Rank long vertical sessions: highest score first, then duration
     catalogs_items["vidi_long_vertical"].sort(key=lambda x: (score_item(x), x.get("duration", 0)), reverse=True)
     print(f"Long Sessions (10-30+ mins): {len(catalogs_items['vidi_long_vertical'])} clips")
 
-    # 2. Route other items
+    # 2. Shower & Wet Bath
     for it in clean_items:
         iid = it["id"]
         if iid in assigned_ids:
             continue
-
         txt = f"{it.get('name', '')} {str(it.get('tags', ''))}"
-        if shower_kws.search(txt):
+        if shower_re.search(txt):
             catalogs_items["vidi_shower_wet"].append(it)
             assigned_ids.add(iid)
-        elif thick_kws.search(txt):
-            catalogs_items["vidi_thick_booty"].append(it)
+
+    # 3. Curvy: Twerk & Booty Shake Flaunt (STRICTLY twerk / booty bounce / jiggle / leggings)
+    for it in clean_items:
+        iid = it["id"]
+        if iid in assigned_ids:
+            continue
+        txt = f"{it.get('name', '')} {str(it.get('tags', ''))}"
+        if twerk_re.search(txt):
+            catalogs_items["vidi_thick_twerk"].append(it)
             assigned_ids.add(iid)
-        elif strip_kws.search(txt):
+
+    # 4. Busty & Cleavage Flaunt (Big natural tits, tit drops, cleavage)
+    for it in clean_items:
+        iid = it["id"]
+        if iid in assigned_ids:
+            continue
+        txt = f"{it.get('name', '')} {str(it.get('tags', ''))}"
+        if busty_re.search(txt):
+            catalogs_items["vidi_busty_cleavage"].append(it)
+            assigned_ids.add(iid)
+
+    # 5. Vertical Couples & POV Hardcore (1M1F bedroom sex, blowjobs, doggystyle)
+    for it in clean_items:
+        iid = it["id"]
+        if iid in assigned_ids:
+            continue
+        txt = f"{it.get('name', '')} {str(it.get('tags', ''))}"
+        if couple_re.search(txt):
+            catalogs_items["vidi_couples_pov"].append(it)
+            assigned_ids.add(iid)
+
+    # 6. Solo Masturbation & Sensual Touch (Pussy play, clit orgasm, fingering)
+    for it in clean_items:
+        iid = it["id"]
+        if iid in assigned_ids:
+            continue
+        txt = f"{it.get('name', '')} {str(it.get('tags', ''))}"
+        if mastro_re.search(txt):
+            catalogs_items["vidi_solo_touch"].append(it)
+            assigned_ids.add(iid)
+
+    # 7. Solo Striptease & Lingerie Tease (Try-on, lingerie, bikini, striptease)
+    for it in clean_items:
+        iid = it["id"]
+        if iid in assigned_ids:
+            continue
+        txt = f"{it.get('name', '')} {str(it.get('tags', ''))}"
+        if strip_re.search(txt):
             catalogs_items["vidi_solo_strip"].append(it)
             assigned_ids.add(iid)
-        elif mirror_kws.search(txt):
+
+    # 8. Phone & Mirror Selfies / OnlyFans (Casual bedroom, mirror selfies, OnlyFans/Snapchat)
+    for it in clean_items:
+        iid = it["id"]
+        if iid in assigned_ids:
+            continue
+        txt = f"{it.get('name', '')} {str(it.get('tags', ''))}"
+        if mirror_re.search(txt):
             catalogs_items["vidi_mirror_selfie"].append(it)
             assigned_ids.add(iid)
         else:
-            catalogs_items["vidi_thick_booty"].append(it)
+            # Gracefully route gentle casual/amateur tease into mirror_selfie rather than twerk!
+            catalogs_items["vidi_mirror_selfie"].append(it)
             assigned_ids.add(iid)
 
-    # Sort every catalog by ranking score (Thick Teen / PAWG twerk at the top of Page 1!)
+    # Sort every catalog by ranking score
     for cid in TARGET_CATALOG_IDS:
         if cid != "vidi_long_vertical":
             catalogs_items[cid].sort(key=score_item, reverse=True)
 
-    print("\nCatalog distribution (Strictly Conforming):")
+    print("\nCatalog distribution (Strictly Conforming & Balanced):")
     for cid in TARGET_CATALOG_IDS:
         print(f"  {cid:22}: {len(catalogs_items[cid])} verified clips")
 
@@ -304,19 +377,22 @@ def run():
     meta_base = REPO_ROOT / "meta" / "movie"
     stream_base = REPO_ROOT / "stream" / "movie"
 
+    # Remove all old catalog folders entirely to avoid stale legacy folders
+    if cat_base.exists():
+        for item in cat_base.iterdir():
+            if item.is_dir():
+                shutil.rmtree(item, ignore_errors=True)
+            elif item.is_file() and item.suffix == ".json":
+                item.unlink(missing_ok=True)
+
     for cid in TARGET_CATALOG_IDS + ["vidi_search"]:
         cdir = cat_base / cid
-        if cdir.exists():
-            shutil.rmtree(cdir, ignore_errors=True)
         cdir.mkdir(parents=True, exist_ok=True)
-        f_top = cat_base / f"{cid}.json"
-        if f_top.exists():
-            f_top.unlink()
 
     meta_base.mkdir(parents=True, exist_ok=True)
     stream_base.mkdir(parents=True, exist_ok=True)
 
-    # Purge old stream and meta files
+    # Purge old stream and meta files that are no longer active
     print("\nPurging non-conforming stream and meta files...")
     all_active_ids = set()
     for cid in TARGET_CATALOG_IDS:
@@ -384,9 +460,9 @@ def run():
     now_str = datetime.datetime.now().strftime("%y%m%d.%H%M")
     manifest = {
         "id": "com.savaa.stremio.solo",
-        "version": f"7.{now_str}",
+        "version": f"8.{now_str}",
         "name": "⭐ Vidi 4K: Portrait Solo & Long Sessions Suite",
-        "description": "Curated Stremio Master Suite: 100% verified active 1080p+ Vertical Solo, Curvy Twerk, Striptease, Shower Wet, Mirror Selfies & Extended Long Sessions (10-30+ mins). Strictly natural curves & PAWG, zero skinny or excluded material, crystal-clear retina thumbnails, direct MP4 streams.",
+        "description": "Curated Stremio Master Suite: 100% verified active 1080p+ Vertical Solo, Curvy Twerk, Busty Cleavage, Striptease, Solo Masturbation, Shower Wet, Mirror Selfies, Vertical POV & Extended Long Sessions (10-30+ mins). Strictly natural curves & PAWG, zero skinny or excluded material, crystal-clear retina thumbnails, direct MP4 streams.",
         "resources": ["catalog", "meta", "stream"],
         "types": ["movie"],
         "idPrefixes": ["xfhq", "xfhq_"],
@@ -403,14 +479,14 @@ def run():
     m3u_lines = ["#EXTM3U"]
     for cid in TARGET_CATALOG_IDS:
         for it in catalogs_items[cid]:
-            name = it.get("name", "Solo Video").replace(",", " ")
+            name = it.get("name", "Video").replace(",", " ")
             url = it.get("stream_url") or it.get("video")
             poster = it.get("poster", "")
             m3u_lines.append(f'#EXTINF:-1 tvg-logo="{poster}" group-title="{cid}",{name}')
             m3u_lines.append(url)
     (REPO_ROOT / "playlist.m3u").write_text("\n".join(m3u_lines), encoding="utf-8")
 
-    print(f"\n✅ Rebuild complete! {len(all_active_ids)} total verified conforming videos. Zero skinny, zero black/ebony, top-ranked thick & curvy clips.")
+    print(f"\n✅ Rebuild complete! {len(all_active_ids)} total verified conforming videos across 8 clean, balanced categories.")
 
 if __name__ == "__main__":
     run()

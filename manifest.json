@@ -1,8 +1,8 @@
 {
   "id": "com.savaa.stremio.solo",
-  "version": "7.261111.1425",
+  "version": "8.261112.0124",
   "name": "⭐ Vidi 4K: Portrait Solo & Long Sessions Suite",
-  "description": "Curated Stremio Master Suite: 100% verified active 1080p+ Vertical Solo, Curvy Twerk, Striptease, Shower Wet, Mirror Selfies & Extended Long Sessions (10-30+ mins). Strictly natural curves & PAWG, zero skinny or excluded material, crystal-clear retina thumbnails, direct MP4 streams.",
+  "description": "Curated Stremio Master Suite: 100% verified active 1080p+ Vertical Solo, Curvy Twerk, Busty Cleavage, Striptease, Solo Masturbation, Shower Wet, Mirror Selfies, Vertical POV & Extended Long Sessions (10-30+ mins). Strictly natural curves & PAWG, zero skinny or excluded material, crystal-clear retina thumbnails, direct MP4 streams.",
   "resources": [
     "catalog",
     "meta",
@@ -18,8 +18,19 @@
   "catalogs": [
     {
       "type": "movie",
-      "id": "vidi_thick_booty",
-      "name": "🍑 Portrait: Curvy & Twerk Flaunt",
+      "id": "vidi_thick_twerk",
+      "name": "🍑 Curvy: Twerk & Booty Shake Flaunt",
+      "extra": [
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "vidi_busty_cleavage",
+      "name": "🍈 Busty & Cleavage Flaunt",
       "extra": [
         {
           "name": "skip",
@@ -30,7 +41,18 @@
     {
       "type": "movie",
       "id": "vidi_solo_strip",
-      "name": "👙 Portrait: Solo Striptease & Tease",
+      "name": "👙 Solo Striptease & Lingerie Tease",
+      "extra": [
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "vidi_solo_touch",
+      "name": "🔥 Solo Masturbation & Sensual Touch",
       "extra": [
         {
           "name": "skip",
@@ -41,7 +63,7 @@
     {
       "type": "movie",
       "id": "vidi_shower_wet",
-      "name": "🚿 Portrait: Shower & Wet Bath",
+      "name": "🚿 Shower, Bath & Wet Oil",
       "extra": [
         {
           "name": "skip",
@@ -52,7 +74,18 @@
     {
       "type": "movie",
       "id": "vidi_mirror_selfie",
-      "name": "📱 Portrait: Phone & Mirror Selfies / OnlyFans",
+      "name": "📱 Phone & Mirror Selfies / OnlyFans",
+      "extra": [
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "vidi_couples_pov",
+      "name": "💥 Vertical Couples & POV Hardcore",
       "extra": [
         {
           "name": "skip",
@@ -63,7 +96,7 @@
     {
       "type": "movie",
       "id": "vidi_long_vertical",
-      "name": "⏳ Portrait: Extended Full-Length Sessions (10–30+ Mins)",
+      "name": "⏳ Extended Full-Length Sessions (10–30+ Mins)",
       "extra": [
         {
           "name": "skip",
