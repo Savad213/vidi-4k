@@ -1,9 +1,18 @@
 """
-Vidi 4K Master Suite Rebuilder (Clear Retina Posters & Long Vertical Sessions)
-- Crystal-clear retina posters from thumbs.xfree.com (100% unblocked in Stremio).
-- Dedicated Long Vertical Sessions row (10-30+ mins).
-- Curated categories: Curvy/Twerk, Solo Striptease, Shower/Wet, Mirror Selfies, Long Sessions.
-- 100% verified active direct streams. Zero dead links.
+Vidi 4K Master Suite Rebuilder (Strict Body Profile, Pure Retina Posters, Zero Exclusions)
+- Strictly EXCLUDES:
+  1. Skinny, petite, flat, tiny, small-breasted, bony models.
+  2. Black / ebony / dark-skin models.
+  3. Group scenes (3+ people).
+  4. Extreme rough / BDSM / dildo / machine / gape.
+  5. Granny / old / mature / pregnant / cartoon / anime.
+- Strictly PRIORITIZES:
+  1. Thick / curvy / PAWG / slim-thick with prominent hips, soft thighs, full butt.
+  2. Youthful adult (18+) aesthetic ("thick teen" / college creator styling).
+  3. Rhythmic motion: twerk, booty shake, bounce, jiggle physics, scrunch leggings.
+  4. Sensual tease: striptease, try-on haul, bikini/lingerie, thong, shower wet, mirror selfies.
+  5. Extended full-length sessions (10-30+ mins).
+- Pure thumbs.xfree.com crystal-clear retina thumbnails with zero referer blocks.
 """
 
 import json
@@ -59,19 +68,43 @@ TARGET_CATALOGS = [
 
 TARGET_CATALOG_IDS = [c["id"] for c in TARGET_CATALOGS if c["id"] != "vidi_search"]
 
-NEG_PAT = re.compile(r"""(?i)\b(
-    pregnant|pregnancy|baby\s*bump|
-    ebony|black\s*girl|black\s*woman|dark\s*skin|
-    granny|gilf|elderly|old\s*woman|
-    anime|hentai|cartoon|3d|animation|
-    trans|shemale|tranny|ladyboy|gay|
-    dildo|sybian|machine|fisting|prolapse|extreme\s*anal|
-    gangbang|orgy|foursome|threesome|group|
-    bdsm|bondage|torture|abuse|slap|choke|
+# ─── STRICT EXCLUSION REGEXES ────────────────────────────────────────────────
+SKINNY_FLAT_PAT = re.compile(r"""(?i)\b(
+    skinny|petite|tiny|flat|flat\s*chest|flat\s*ass|flat\s*tits|
+    small\s*tits|small\s*boobs|small\s*chest|small\s*breasts|
+    bony|very\s*thin|thin\s*girl|underweight|anorexic|skinny\s*girl|
+    skinny\s*teen|petite\s*teen|tiny\s*teen|petite\s*solo|skinny\s*solo
+)\b""", re.VERBOSE)
+
+BLACK_EBONY_PAT = re.compile(r"""(?i)\b(
+    ebony|black\s*girl|black\s*woman|dark\s*skin|blacked|interracial|
+    african|nigerian|jamaican|ghanaian|bbc|chocolate\s*skin|dark\s*body
+)\b""", re.VERBOSE)
+
+UNIVERSAL_NEG_PAT = re.compile(r"""(?i)\b(
+    pregnant|pregnancy|baby\s*bump|maternity|
+    granny|gilf|elderly|old\s*woman|wrinkled|senior|aged\s*woman|
+    anime|hentai|cartoon|3d|animation|sfm|blender|
+    trans|shemale|tranny|ladyboy|gay|femboy|
+    dildo|giant\s*dildo|huge\s*dildo|sybian|sex\s*machine|machine|
+    gape|gaping|prolapse|fist|fisting|extreme\s*anal|
+    gangbang|orgy|foursome|threesome|group|swinger|3some|4some|
+    bdsm|bondage|torture|abuse|slap|choke|whipped|punish|slave|
     pissing|urine|watersport|scat|feet|footfetish
 )\b""", re.VERBOSE)
 
-def is_clean(it):
+THICK_POSITIVE_PAT = re.compile(r"""(?i)\b(
+    thick|curvy|pawg|slimthick|slim\s*thick|bubble\s*butt|huge\s*ass|big\s*ass|
+    fat\s*ass|phat\s*ass|heavy\s*bottom|wide\s*hips|soft\s*thighs|thicc|
+    twerk|twerking|booty\s*shake|ass\s*shake|booty\s*bounce|ass\s*bounce|
+    jiggle|clap|scrunch|leggings|spandex
+)\b""", re.VERBOSE)
+
+TEEN_COLLEGE_PAT = re.compile(r"""(?i)\b(
+    teen|teens|college|student|18|19|young|schoolgirl|cheerleader|coed
+)\b""", re.VERBOSE)
+
+def is_strictly_conforming(it):
     name = it.get("name", "")
     tags = it.get("tags", [])
     if isinstance(tags, list):
@@ -79,9 +112,50 @@ def is_clean(it):
     else:
         tags_str = str(tags)
     txt = f"{name} {tags_str}"
-    if NEG_PAT.search(txt):
+
+    # 1. Reject Skinny / Flat / Petite
+    if SKINNY_FLAT_PAT.search(txt):
         return False
+
+    # 2. Reject Black / Ebony
+    if BLACK_EBONY_PAT.search(txt):
+        return False
+
+    # 3. Reject Universal Negatives (group, trans, BDSM, dildo, old, pregnant, etc.)
+    if UNIVERSAL_NEG_PAT.search(txt):
+        return False
+
     return True
+
+def score_item(it):
+    """Calculates ranking score: highest for Thick + Teen/Youthful + Twerk/Tease."""
+    name = it.get("name", "")
+    tags = it.get("tags", [])
+    if isinstance(tags, list):
+        tags_str = " ".join(tags)
+    else:
+        tags_str = str(tags)
+    txt = f"{name} {tags_str}"
+
+    score = 0
+    # Core preference: Thick / Curvy / PAWG
+    if THICK_POSITIVE_PAT.search(txt):
+        score += 50
+    # Top preference: Thick Teen / Youthful Adult styling
+    if TEEN_COLLEGE_PAT.search(txt):
+        score += 40
+    # Rhythmic action
+    if re.search(r"(?i)\b(twerk|bounce|jiggle|clap|scrunch)\b", txt):
+        score += 30
+    # Tease / Try on / Shower
+    if re.search(r"(?i)\b(try\s*on|tease|strip|bikini|thong|shower|wet|oil|mirror)\b", txt):
+        score += 20
+    # Likes / rating if available
+    likes = it.get("likes", 0)
+    if isinstance(likes, (int, float)):
+        score += min(int(likes / 100), 20)
+
+    return score
 
 def format_runtime(sec):
     try:
@@ -120,7 +194,7 @@ def to_meta(it):
     }
 
 def run():
-    print("=== Step 1: Loading Pools with Crystal-Clear Retina Posters ===")
+    print("=== Step 1: Loading Pools with Strict Taste Enforcement ===")
     pools = ["vidi_all.json", "vidi_tease.json", "vidi_4k.json", "emmyelfie_xfree_1080plus.json"]
     all_raw_items = []
     seen_urls = set()
@@ -150,7 +224,6 @@ def run():
                     continue
 
                 seen_urls.add(vurl)
-                # Normalize item
                 iid = it.get("id") or f"xfhq_{abs(hash(vurl)) % 10000000}"
                 if not str(iid).startswith("xfhq"):
                     iid = f"xfhq_{iid}"
@@ -168,19 +241,18 @@ def run():
         except Exception as e:
             print(f"Error loading {p}: {e}")
 
-    print(f"Total raw items loaded: {len(all_raw_items)}")
+    print(f"Total raw items: {len(all_raw_items)}")
 
-    # Filter by taste exclusions
-    clean_items = [it for it in all_raw_items if is_clean(it)]
-    print(f"Total clean conforming items: {len(clean_items)}")
+    # Strictly filter out skinny, black/ebony, and other negative categories
+    clean_items = [it for it in all_raw_items if is_strictly_conforming(it)]
+    print(f"Items remaining after purging skinny, flat, black/ebony, and negatives: {len(clean_items)}")
 
-    # Route items into catalogs
     catalogs_items = defaultdict(list)
     assigned_ids = set()
 
-    # Matchers
+    # Keyword matchers
     shower_kws = re.compile(r"(?i)\b(shower|bath|soapy|wet|oil|oiled|nuru|lotion|tub)\b")
-    thick_kws = re.compile(r"(?i)\b(twerk|booty|ass|pawg|thick|curvy|slimthick|bubble\s*butt|jiggle|bounce|clap|shake|leggings|scrunch|spandex)\b")
+    thick_kws = re.compile(r"(?i)\b(twerk|booty|ass|pawg|thick|curvy|slimthick|bubble\s*butt|jiggle|bounce|clap|shake|leggings|scrunch|spandex|teen)\b")
     strip_kws = re.compile(r"(?i)\b(strip|striptease|undress|peel|try\s*on|bikini|lingerie|thong|gstring|micro\s*thong|skirt|tease)\b")
     mirror_kws = re.compile(r"(?i)\b(selfie|mirror|phone|onlyfans|fansly|gfe|bed|morning|baddie|pov)\b")
 
@@ -191,9 +263,9 @@ def run():
             catalogs_items["vidi_long_vertical"].append(it)
             assigned_ids.add(it["id"])
 
-    # Sort long vertical by duration descending
-    catalogs_items["vidi_long_vertical"].sort(key=lambda x: x.get("duration", 0), reverse=True)
-    print(f"Long Vertical Sessions (10-30+ mins): {len(catalogs_items['vidi_long_vertical'])} clips")
+    # Rank long vertical sessions: highest score first, then duration
+    catalogs_items["vidi_long_vertical"].sort(key=lambda x: (score_item(x), x.get("duration", 0)), reverse=True)
+    print(f"Long Sessions (10-30+ mins): {len(catalogs_items['vidi_long_vertical'])} clips")
 
     # 2. Route other items
     for it in clean_items:
@@ -218,7 +290,12 @@ def run():
             catalogs_items["vidi_thick_booty"].append(it)
             assigned_ids.add(iid)
 
-    print("\nCatalog distribution:")
+    # Sort every catalog by ranking score (Thick Teen / PAWG twerk at the top of Page 1!)
+    for cid in TARGET_CATALOG_IDS:
+        if cid != "vidi_long_vertical":
+            catalogs_items[cid].sort(key=score_item, reverse=True)
+
+    print("\nCatalog distribution (Strictly Conforming):")
     for cid in TARGET_CATALOG_IDS:
         print(f"  {cid:22}: {len(catalogs_items[cid])} verified clips")
 
@@ -227,7 +304,6 @@ def run():
     meta_base = REPO_ROOT / "meta" / "movie"
     stream_base = REPO_ROOT / "stream" / "movie"
 
-    # Reset catalog directories
     for cid in TARGET_CATALOG_IDS + ["vidi_search"]:
         cdir = cat_base / cid
         if cdir.exists():
@@ -241,7 +317,7 @@ def run():
     stream_base.mkdir(parents=True, exist_ok=True)
 
     # Purge old stream and meta files
-    print("\nPurging stale stream and meta files...")
+    print("\nPurging non-conforming stream and meta files...")
     all_active_ids = set()
     for cid in TARGET_CATALOG_IDS:
         for it in catalogs_items[cid]:
@@ -310,7 +386,7 @@ def run():
         "id": "com.savaa.stremio.solo",
         "version": f"7.{now_str}",
         "name": "⭐ Vidi 4K: Portrait Solo & Long Sessions Suite",
-        "description": "Curated Stremio Master Suite: 100% verified active 1080p+ Vertical Solo, Curvy Twerk, Striptease, Shower Wet, Mirror Selfies & Extended Long Sessions (10-30+ mins). Crystal-clear retina thumbnails, zero dead links, 100% playable direct MP4 streams.",
+        "description": "Curated Stremio Master Suite: 100% verified active 1080p+ Vertical Solo, Curvy Twerk, Striptease, Shower Wet, Mirror Selfies & Extended Long Sessions (10-30+ mins). Strictly natural curves & PAWG, zero skinny or excluded material, crystal-clear retina thumbnails, direct MP4 streams.",
         "resources": ["catalog", "meta", "stream"],
         "types": ["movie"],
         "idPrefixes": ["xfhq_"],
@@ -334,7 +410,7 @@ def run():
             m3u_lines.append(url)
     (REPO_ROOT / "playlist.m3u").write_text("\n".join(m3u_lines), encoding="utf-8")
 
-    print(f"\n✅ Rebuild complete! {len(all_active_ids)} total verified videos across all shelves with crystal-clear retina thumbnails.")
+    print(f"\n✅ Rebuild complete! {len(all_active_ids)} total verified conforming videos. Zero skinny, zero black/ebony, top-ranked thick & curvy clips.")
 
 if __name__ == "__main__":
     run()
