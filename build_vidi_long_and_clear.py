@@ -215,7 +215,7 @@ def to_meta(it):
 
 def run():
     print("=== Step 1: Loading Pools with Strict Taste Enforcement ===")
-    pools = ["vidi_all.json", "vidi_tease.json", "vidi_4k.json", "emmyelfie_xfree_1080plus.json"]
+    pools = ["vidi_all.json", "vidi_tease.json", "vidi_4k.json", "emmyelfie_xfree_1080plus.json", "harvested_creators.json"]
     all_raw_items = []
     seen_urls = set()
 
@@ -237,8 +237,8 @@ def run():
                 purl = it.get("poster") or it.get("thumbnail")
                 if not vurl or not purl:
                     continue
-                # Ensure crystal-clear thumbs.xfree.com or pimpbunny retina poster
-                if not ("thumbs.xfree.com" in purl or "pimpbunny.com" in purl):
+                # Ensure crystal-clear retina poster (xfree, pimpbunny, or redgifs)
+                if not ("thumbs.xfree.com" in purl or "pimpbunny.com" in purl or "redgifs.com" in purl):
                     continue
                 if vurl in seen_urls:
                     continue
