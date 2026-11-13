@@ -257,10 +257,14 @@ def rebuild():
 
     # Manifest
     print("\n=== Step 5: Updating Manifest ===")
-    now_str = datetime.datetime.now().strftime("%y%m%d.%H%M")
+    dt = datetime.datetime.now()
+    date_part = dt.strftime("%y%m%d")
+    patch_part = str(int(dt.strftime("%H%M")))
+    ver = f"9.{date_part}.{patch_part}"
+    assert not re.search(r"(^|\.)0\d", ver), f"Leading zero in version: {ver}"
     manifest = {
         "id": "com.savaa.stremio.solo",
-        "version": f"9.{now_str}",
+        "version": ver,
         "name": "⭐ Vidi 4K: Portrait Solo & Creator Suite",
         "description": "Curated Stremio Master Suite: 100% verified active 1080p+ Vertical Solo, OnlyFans & Fansly Creators, Booty Twerk, Striptease, Shower Wet & Mirror Selfies. Zero dead links, 100% playable direct MP4 streams.",
         "resources": ["catalog", "meta", "stream"],
