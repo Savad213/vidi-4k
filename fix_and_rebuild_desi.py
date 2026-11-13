@@ -37,7 +37,14 @@ def check_url(sf):
         return (sf.stem, False, None)
 
 def run():
-    print("=== Step 1: Auditing & Verifying all 503 Desi streams ===", flush=True)
+    print("=== Step 1: Auditing & Verifying all Desi streams ===", flush=True)
+    
+    # Taste Profile Exclusions (Zero 3+ people, Zero sex machines, Zero dildos/toys)
+    EXCLUDE_KEYWORDS = [
+        'fuck machine', 'sex machine', 'dildo', 'sybian', 'trans', 'shemale', 'tranny',
+        'ladyboy', 'gay', 'fboy', 'lady boy', 'orgy', 'gangbang', 'foursome', 'threesome'
+    ]
+
     stream_files = list(stream_base.glob("*.json"))
     print(f"Found {len(stream_files)} stream files.", flush=True)
 
@@ -47,12 +54,24 @@ def run():
     valid_items = {}
     dead_ids = set()
     for sid, is_valid, stream_obj in results:
-        if is_valid:
+        # Check against meta description/title for forbidden themes
+        m_file = meta_base / f"{sid}.json"
+        is_clean = True
+        if m_file.exists():
+            try:
+                m_data = json.loads(m_file.read_text(encoding="utf-8"))
+                txt = (m_data.get("meta", {}).get("name", "") + " " + m_data.get("meta", {}).get("description", "")).lower()
+                if any(bad in txt for bad in EXCLUDE_KEYWORDS):
+                    is_clean = False
+            except Exception:
+                pass
+
+        if is_valid and is_clean:
             valid_items[sid] = stream_obj
         else:
             dead_ids.add(sid)
 
-    print(f"Verified {len(valid_items)} LIVE streams. Dropping {len(dead_ids)} dead streams.", flush=True)
+    print(f"Verified {len(valid_items)} LIVE, taste-compliant streams. Dropping {len(dead_ids)} non-conforming/dead streams.", flush=True)
 
     # Clean dead stream and meta files
     for sid in dead_ids:

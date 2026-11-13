@@ -69,10 +69,29 @@ DISALLOWED_TAGS = {
     'tentacle', 'pissing', 'urine', 'watersport', 'scat', 'feet', 'footfetish'
 }
 
+EXCLUDE_USERS = {
+    'betamalebros', 'cutiefboy9', 'populardick', 'sasukebbc',
+    'agentsmith007', 'metulski007', 'rsuburbpervs', 'jjack_303',
+    'caiobizo', 'cot6969', 'di_myname', 'hhhkcncm', 'ihavepour_grammer',
+    'ilikesex95', 'jvpxtnpx', 'no_connection_9155', 'perfect-location-865',
+    'virginiabsbsbsns', 'wadamadafaka'
+}
+
+LO_CORE_CREATORS = {
+    'yamimommy', 'lit1le_kitty', 'amybounce', 'phdprincess', 'cyberlycrush',
+    'pinkdroid462', 'whitebat', 'hotpearl', 'princessiggy', 'halibell',
+    'leilacopperbottom', 'respectedcommander1', 'galablack12', 'kisscat',
+    'blackwidof', 'theemilylynne', 'theivoryfox', 'thiccameron', 'nawtyhellcat',
+    'cutesylucy', 'kenalialuv', 'sophie mudd', 'sophiemudd', 'hannah owo', 'hannahowo',
+    'eva elfie', 'evaelfie', 'little caprice', 'littlecaprice', 'jia lissa', 'jialissa',
+    'mila azul', 'milaazul', 'luxury girl', 'luxurygirl', 'stella cardo', 'stella.cardo',
+    'emilysweet', 'blondeadobo', 'lilbraids', 'mistykittyluv556', 'shelovesitrough'
+}
+
 SOLO_EXCLUSION_PATTERN = re.compile(r"""(?i)\b(
     teen|teens|barelylegal|schoolgirl|student|college|daddy|
     dude|dudes|man|men|male|males|boyfriend|bf|husband|uncle|boss|driver|
-    balls|bwc|bbc|lund|loda|cock|penis|dick|
+    balls|bwc|bbc|lund|loda|cock|penis|dick|cum|blowjob|
     analplug|buttplug|strapon|sexmachine|machine|
     dildo|giantdildo|hugeanaldildo|sybian|vibrator|toy|toys|
     skinny|petite|flat\s*chest|flat\s*tits|small\s*tits|bony
@@ -138,6 +157,10 @@ def rebuild():
 
         url = it.get("stream_url") or it.get("url", "")
         if not ("media.redgifs.com" in url or "redgifs.com" in url):
+            continue
+
+        u = it.get("user", "").lower()
+        if u in EXCLUDE_USERS:
             continue
 
         # Strict exclusion check
