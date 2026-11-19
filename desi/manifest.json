@@ -1,8 +1,8 @@
 {
   "id": "com.savaa.stremio.desi",
-  "version": "2.261113.1008",
-  "name": "⭐ Desi 4K: Indian & Pakistani MMS Suite",
-  "description": "Curated Indian & Pakistani Phone MMS, Viral Leaks, Bathroom Cams, Couple Private Tapes & Real Amateur Sessions. 100% verified direct playable streams, zero dead links.",
+  "version": "2.261119.1300",
+  "name": "Desi HD: Verified 1080p+ Adult Scenes",
+  "description": "Curated adult Desi scenes with directly probed 1080p or better MP4 streams. Low resolution, unverified, leak-labeled, and age-ambiguous titles are excluded.",
   "resources": [
     "catalog",
     "meta",
@@ -17,56 +17,12 @@
   "catalogs": [
     {
       "type": "movie",
-      "id": "desi_bathroom",
-      "name": "🚿 Desi & Pakistani: Bathroom & Shower Leaks",
+      "id": "desi_hd",
+      "name": "Desi HD - Verified 1080p+",
       "extra": [
         {
           "name": "skip",
           "isRequired": false
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "desi_couples_viral",
-      "name": "📹 Desi & Pakistani: Viral Couples & Private MMS",
-      "extra": [
-        {
-          "name": "skip",
-          "isRequired": false
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "desi_amateur_cuck",
-      "name": "🔞 Desi & Pakistani: Real Amateur & Risky Hookups",
-      "extra": [
-        {
-          "name": "skip",
-          "isRequired": false
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "desi_tease_live",
-      "name": "💃 Desi & Pakistani: Striptease & Live Cam Leaks",
-      "extra": [
-        {
-          "name": "skip",
-          "isRequired": false
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "desi_search",
-      "name": "🔍 Search Desi & Pakistani MMS",
-      "extra": [
-        {
-          "name": "search",
-          "isRequired": true
         }
       ]
     }
